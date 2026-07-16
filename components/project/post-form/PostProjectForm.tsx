@@ -3,10 +3,12 @@
 import Link from 'next/link';
 import { useState } from 'react';
 
-import { Button, Card, H1, SectionDivider, Sub } from '@/components/ui';
+import type { Domain, Skill } from '@/lib/data';
+import { Button, Card, H1, Meta, SectionDivider, Sub } from '@/components/ui';
 
 import { usePostProjectForm } from '@/hooks/usePostProjectForm';
 
+import { createProject } from '@/app/(main)/projects/new/actions';
 import { BasicsSection } from './BasicsSection';
 import { DescriptionSection } from './DescriptionSection';
 import { LookingForSection } from './LookingForSection';
@@ -15,32 +17,44 @@ import { SubmitBar } from './SubmitBar';
 import { ToolsLinksSection } from './ToolsLinksSection';
 import { VisibilitySection } from './VisibilitySection';
 
-export function PostProjectForm() {
+export interface PostProjectFormProps {
+  domains: Domain[];
+  skills: Skill[];
+}
+
+export function PostProjectForm({ domains, skills }: PostProjectFormProps) {
   const form = usePostProjectForm();
   const { state } = form;
   const [publishing, setPublishing] = useState(false);
-  const [published, setPublished] = useState(false);
+  const [publishedId, setPublishedId] = useState<string | null>(null);
+  const [publishError, setPublishError] = useState<string | null>(null);
 
   const handlePublish = async () => {
     setPublishing(true);
-    // Mock publish: no backend yet, so we just simulate latency then show inline success.
-    await new Promise((resolve) => setTimeout(resolve, 600));
+    setPublishError(null);
+    const result = await createProject(state);
     setPublishing(false);
-    setPublished(true);
+    if (result.ok && result.projectId) {
+      setPublishedId(result.projectId);
+    } else {
+      setPublishError(result.error ?? 'Something went wrong. Please try again.');
+    }
   };
 
   return (
     <div className="mx-auto max-w-[660px]">
-      {published && (
+      {publishedId && (
         <Card accent className="mb-6">
           <p className="text-[15px] font-semibold text-ink">🎉 Project published!</p>
-          <Sub className="mt-1">
-            This is a mock — nothing is actually saved or persisted anywhere yet; the backend phase
-            will wire this up for real.
-          </Sub>
-          <Link href="/home" className="mt-4 inline-block">
-            <Button variant="primary">Back to home</Button>
+          <Sub className="mt-1">Your project is live and visible on the discovery feed.</Sub>
+          <Link href={`/projects/${publishedId}`} className="mt-4 inline-block">
+            <Button variant="primary">View your project</Button>
           </Link>
+        </Card>
+      )}
+      {publishError && (
+        <Card className="mb-6 border-primary/40">
+          <Meta className="text-primary">{publishError}</Meta>
         </Card>
       )}
 
@@ -58,6 +72,7 @@ export function PostProjectForm() {
           pitch={state.pitch}
           categoryDomainId={state.categoryDomainId}
           stage={state.stage}
+          domains={domains}
           setTitle={form.setTitle}
           setPitch={form.setPitch}
           setCategory={form.setCategory}
@@ -84,6 +99,7 @@ export function PostProjectForm() {
           skillsNeeded={state.skillsNeeded}
           commitment={state.commitment}
           collaborationStyle={state.collaborationStyle}
+          skills={skills}
           addRole={form.addRole}
           removeRole={form.removeRole}
           updateRole={form.updateRole}

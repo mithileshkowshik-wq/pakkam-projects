@@ -3,12 +3,15 @@ import { Search } from 'lucide-react';
 import { ProjectFeedFilters } from '@/components/project/ProjectFeedFilters';
 import { SuggestedRail } from '@/components/shared/SuggestedRail';
 import { H1, Input, MonoLabel } from '@/components/ui';
-import { CURRENT_USER_ID, DOMAINS, getSuggestedPeople, getSuggestedProjects, PROJECTS } from '@/lib/mock';
+import { getCurrentUser, getDomains, getFeedProjects, getSuggestedPeople, getSuggestedProjects } from '@/lib/data';
 
 export default async function HomePage() {
-  const [suggestedPeople, suggestedProjects] = await Promise.all([
-    getSuggestedPeople(CURRENT_USER_ID, 3),
-    getSuggestedProjects(CURRENT_USER_ID, 2),
+  const currentUser = await getCurrentUser();
+  const [projects, domains, suggestedPeople, suggestedProjects] = await Promise.all([
+    getFeedProjects(),
+    getDomains(),
+    getSuggestedPeople(currentUser!.id, 3),
+    getSuggestedProjects(currentUser!.id, 2),
   ]);
 
   return (
@@ -32,7 +35,7 @@ export default async function HomePage() {
 
       {/* <desktop stacks (rail toggle above feed via order); ≥desktop is the two-track feed + rail row. */}
       <div className="flex flex-col gap-2 desktop:flex-row desktop:items-start desktop:gap-6">
-        <ProjectFeedFilters projects={PROJECTS} domains={DOMAINS} />
+        <ProjectFeedFilters projects={projects} domains={domains} />
         <SuggestedRail people={suggestedPeople} projects={suggestedProjects} />
       </div>
     </div>

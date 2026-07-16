@@ -1,0 +1,245 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Availability {
+  CASUAL
+  PART_TIME
+  SERIOUS
+  BROWSING
+}
+
+enum ProjectStage {
+  IDEA
+  PROTOTYPE
+  IN_PROGRESS
+  NEAR_LAUNCH
+}
+
+enum CommitmentLevel {
+  CASUAL
+  PART_TIME
+  SERIOUS
+}
+
+enum LookingFor {
+  JOIN_PROJECT
+  FIND_COLLABORATORS
+  BOTH
+  EXPLORING
+}
+
+enum RequestStatus {
+  PENDING
+  ACCEPTED
+  DECLINED
+}
+
+enum ConversationType {
+  DIRECT
+  PROJECT_ROOM
+}
+
+model User {
+  id                String       @id @default(cuid())
+  supabaseId        String       @unique
+  username          String       @unique
+  name              String
+  headline          String?
+  bio               String?
+  avatarUrl         String?
+  location          String?
+  availabilityLevel Availability @default(CASUAL)
+  lookingFor        LookingFor?
+  openToCollaborate Boolean      @default(true)
+  profileComplete   Boolean      @default(false)
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+
+  skills         UserSkill[]
+  domains        UserDomain[]
+  projects       Project[]                 @relation("ProjectOwner")
+  collabRequests CollabRequest[]           @relation("Requester")
+  collaborations Collaboration[]
+  sentMessages   Message[]                 @relation("Sender")
+  participations ConversationParticipant[]
+}
+
+model Skill {
+  id       String @id @default(cuid())
+  name     String @unique
+  category String?
+
+  users    UserSkill[]
+  projects ProjectSkill[]
+}
+
+model Domain {
+  id    String  @id @default(cuid())
+  name  String  @unique
+  emoji String?
+
+  users    UserDomain[]
+  projects ProjectDomain[]
+}
+
+model UserSkill {
+  userId  String
+  skillId String
+  user    User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill   Skill @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([userId, skillId])
+}
+
+model UserDomain {
+  userId   String
+  domainId String
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  domain   Domain @relation(fields: [domainId], references: [id], onDelete: Cascade)
+
+  @@id([userId, domainId])
+}
+
+/// description is stored as a single Text column. Convention: paragraphs are
+/// joined with "\n\n" on write and split on "\n\n" on render (see lib/data).
+model Project {
+  id                 String          @id @default(cuid())
+  ownerId            String
+  owner              User            @relation("ProjectOwner", fields: [ownerId], references: [id], onDelete: Cascade)
+  title              String
+  pitch              String
+  description        String          @db.Text
+  stage              ProjectStage    @default(IDEA)
+  commitmentLevel    CommitmentLevel @default(CASUAL)
+  collaborationStyle String[]
+  tools              String[]
+  isOpenToCollabs    Boolean         @default(true)
+  isPublic           Boolean         @default(true)
+  viewingCount       Int             @default(0)
+  createdAt          DateTime        @default(now())
+  updatedAt          DateTime        @updatedAt
+
+  skills         ProjectSkill[]
+  domains        ProjectDomain[]
+  roles          ProjectRole[]
+  links          ProjectLink[]
+  updates        ProjectUpdate[]
+  collabRequests CollabRequest[]
+  collaborations Collaboration[]
+
+  @@index([ownerId])
+  @@index([isPublic, updatedAt])
+}
+
+model ProjectSkill {
+  projectId String
+  skillId   String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  skill     Skill   @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, skillId])
+}
+
+model ProjectDomain {
+  projectId String
+  domainId  String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  domain    Domain  @relation(fields: [domainId], references: [id], onDelete: Cascade)
+
+  @@id([projectId, domainId])
+}
+
+model ProjectRole {
+  id          String  @id @default(cuid())
+  projectId   String
+  project     Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  title       String
+  description String?
+  order       Int     @default(0)
+}
+
+model ProjectLink {
+  id        String  @id @default(cuid())
+  projectId String
+  project   Project @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  label     String
+  url       String
+}
+
+model ProjectUpdate {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  content   String   @db.Text
+  createdAt DateTime @default(now())
+}
+
+/// Schema exists for "full migration" completeness; no application code writes
+/// to this table yet — RequestToCollaborateCard stays a mocked UI action.
+model CollabRequest {
+  id          String        @id @default(cuid())
+  projectId   String
+  project     Project       @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  requesterId String
+  requester   User          @relation("Requester", fields: [requesterId], references: [id], onDelete: Cascade)
+  message     String?       @db.Text
+  status      RequestStatus @default(PENDING)
+  createdAt   DateTime      @default(now())
+
+  @@index([projectId])
+}
+
+/// Schema exists for "full migration" completeness; no application code writes
+/// to this table yet.
+model Collaboration {
+  id        String   @id @default(cuid())
+  projectId String
+  project   Project  @relation(fields: [projectId], references: [id], onDelete: Cascade)
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([projectId, userId])
+}
+
+/// `type` includes PROJECT_ROOM for future-proofing; only DIRECT conversations
+/// are created by any code path this phase.
+model Conversation {
+  id        String           @id @default(cuid())
+  type      ConversationType @default(DIRECT)
+  projectId String?          @unique
+  createdAt DateTime         @default(now())
+
+  participants ConversationParticipant[]
+  messages     Message[]
+}
+
+model ConversationParticipant {
+  conversationId String
+  userId         String
+  lastReadAt     DateTime?
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  user           User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([conversationId, userId])
+  @@index([userId])
+}
+
+model Message {
+  id             String       @id @default(cuid())
+  conversationId String
+  conversation   Conversation @relation(fields: [conversationId], references: [id], onDelete: Cascade)
+  senderId       String
+  sender         User         @relation("Sender", fields: [senderId], references: [id], onDelete: Cascade)
+  content        String       @db.Text
+  createdAt      DateTime     @default(now())
+  editedAt       DateTime?
+
+  @@index([conversationId, createdAt])
+}

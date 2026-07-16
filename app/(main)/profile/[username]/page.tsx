@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 
-import { CURRENT_USER_ID, getProjectsByOwner, getUserByUsername } from '@/lib/mock';
+import { getCurrentUser, getProjectsByOwner, getUserByUsername } from '@/lib/data';
 import { H2, SectionDivider, Sub } from '@/components/ui';
 import { ProfileHeaderCard } from '@/components/profile/ProfileHeaderCard';
 import { ActiveProjectsRow } from '@/components/profile/ActiveProjectsRow';
@@ -23,7 +23,8 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const user = await getUserByUsername(params.username);
   if (!user) notFound();
 
-  const isOwner = user.id === CURRENT_USER_ID;
+  const currentUser = await getCurrentUser();
+  const isOwner = currentUser?.id === user.id;
   const activeProjects = await getProjectsByOwner(user.id);
 
   return (

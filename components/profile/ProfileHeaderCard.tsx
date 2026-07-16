@@ -3,6 +3,9 @@ import { MapPin } from 'lucide-react';
 import { AVAILABILITY_LABEL } from '@/lib/constants';
 import type { User } from '@/lib/mock/types';
 import { Avatar, Button, Card, Chip, H1, MonoLabel, Sub } from '@/components/ui';
+import { SignOutButton } from '@/components/layout/SignOutButton';
+
+import { MessageButton } from './MessageButton';
 
 export interface ProfileHeaderCardProps {
   user: User;
@@ -26,11 +29,16 @@ export function ProfileHeaderCard({ user, isOwner }: ProfileHeaderCardProps) {
             <Avatar size={88} name={user.name} src={user.avatarUrl} />
           </div>
 
-          {isOwner && (
-            // Visual affordance only: there is no edit-profile screen in scope this pass.
-            <Button disabled className="mt-[52px]">
-              Edit Profile
-            </Button>
+          {isOwner ? (
+            // Sign-out lives here too since the icon-only sidebar rail (768–1200px) and the
+            // mobile bottom nav (<768px) have no persistent slot for it.
+            <div className="mt-[52px] flex items-center gap-2">
+              <SignOutButton />
+              {/* Visual affordance only: there is no edit-profile screen in scope this pass. */}
+              <Button disabled>Edit Profile</Button>
+            </div>
+          ) : (
+            <MessageButton userId={user.id} className="mt-[52px]" />
           )}
         </div>
 

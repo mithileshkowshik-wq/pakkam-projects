@@ -31,8 +31,12 @@ export function Sidebar({ currentUser }: SidebarProps) {
         <NavItem href="/home" icon={Compass} label="Home" active={isHome} />
         {/* "My Projects" reasonably overlaps the owner's profile this pass (no dedicated screen in scope). */}
         <NavItem href={profileHref} icon={Folder} label="My Projects" active={isProfile} />
-        {/* Messaging is out of scope; rendered non-interactive so it reads as "coming soon" not a dead 404 link. */}
-        <NavItem icon={MessageSquare} label="Messages" disabled />
+        <NavItem
+          href="/messages"
+          icon={MessageSquare}
+          label="Messages"
+          active={pathname.startsWith('/messages')}
+        />
         <NavItem href={profileHref} icon={UserIcon} label="Profile" active={isProfile} />
       </nav>
 

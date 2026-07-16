@@ -25,6 +25,7 @@ export function BottomNav({ currentUser }: BottomNavProps) {
   const isHome = pathname === '/home';
   const isProfile = pathname.startsWith('/profile');
   const isNew = pathname.startsWith('/projects/new');
+  const isMessages = pathname.startsWith('/messages');
 
   return (
     <nav
@@ -34,8 +35,7 @@ export function BottomNav({ currentUser }: BottomNavProps) {
       <Tab href="/home" icon={Compass} label="Home" active={isHome} />
       {/* "My Projects" reasonably overlaps the owner's profile this pass (no dedicated screen in scope). */}
       <Tab href={profileHref} icon={Folder} label="My Projects" active={isProfile} />
-      {/* Messaging is out of scope; disabled so it reads as "coming soon" not a dead link (matches Sidebar). */}
-      <Tab icon={MessageSquare} label="Messages" disabled />
+      <Tab href="/messages" icon={MessageSquare} label="Messages" active={isMessages} />
       <Tab href={profileHref} icon={UserIcon} label="Profile" active={isProfile} />
       <Tab href="/projects/new" icon={Plus} label="Post a Project" active={isNew} />
     </nav>

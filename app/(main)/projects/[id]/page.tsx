@@ -7,7 +7,7 @@ import { OwnerCard } from '@/components/project/OwnerCard';
 import { ProjectUpdateList } from '@/components/project/ProjectUpdateList';
 import { RoleListItem } from '@/components/project/RoleListItem';
 import { RequestToCollaborateCard } from '@/components/project/RequestToCollaborateCard';
-import { getProjectById, getUserByUsername } from '@/lib/mock';
+import { getProjectById, getUserByUsername } from '@/lib/data';
 import { formatRelativeDate } from '@/lib/utils';
 
 export default async function ProjectDetailPage({

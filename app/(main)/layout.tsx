@@ -1,8 +1,8 @@
-import { notFound } from 'next/navigation';
+import { redirect } from 'next/navigation';
 
 import { BottomNav } from '@/components/layout/BottomNav';
 import { Sidebar } from '@/components/layout/Sidebar';
-import { CURRENT_USER_ID, USERS } from '@/lib/mock';
+import { getCurrentUser } from '@/lib/data';
 
 /**
  * Judgment call: we intentionally skip the design mockup's floating rounded-card / shadow-shell
@@ -11,8 +11,10 @@ import { CURRENT_USER_ID, USERS } from '@/lib/mock';
  * in `rounded-[22px] shadow-shell overflow-hidden` with an outer centered max-width.
  */
 export default async function MainLayout({ children }: { children: React.ReactNode }) {
-  const currentUser = USERS.find((u) => u.id === CURRENT_USER_ID);
-  if (!currentUser) notFound();
+  // Defensive fallback only — middleware.ts already guarantees a session on every
+  // (main) route, so this redirect should be unreachable in practice.
+  const currentUser = await getCurrentUser();
+  if (!currentUser) redirect('/login');
 
   return (
     // Sidebar (≥768px) and BottomNav (<768px) each self-manage visibility via Tailwind breakpoints;

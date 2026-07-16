@@ -1,8 +1,7 @@
 'use client';
 
 import { CharCounter, Chip, Input, RadioCard } from '@/components/ui';
-import { DOMAINS } from '@/lib/mock';
-import type { ProjectStage } from '@/lib/mock/types';
+import type { Domain, ProjectStage } from '@/lib/data';
 
 import { PITCH_MAX, TITLE_MAX } from '@/hooks/usePostProjectForm';
 
@@ -18,6 +17,7 @@ export interface BasicsSectionProps {
   pitch: string;
   categoryDomainId: string;
   stage: ProjectStage;
+  domains: Domain[];
   setTitle: (v: string) => void;
   setPitch: (v: string) => void;
   setCategory: (v: string) => void;
@@ -46,6 +46,7 @@ export function BasicsSection({
   pitch,
   categoryDomainId,
   stage,
+  domains,
   setTitle,
   setPitch,
   setCategory,
@@ -85,7 +86,7 @@ export function BasicsSection({
 
       <Field label="Category">
         <div className="flex flex-wrap gap-2">
-          {DOMAINS.map((domain) => {
+          {domains.map((domain) => {
             const selected = categoryDomainId === domain.id;
             return (
               <Chip

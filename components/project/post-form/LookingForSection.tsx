@@ -3,8 +3,7 @@
 import { Plus, X } from 'lucide-react';
 
 import { Button, Chip, Input, RadioCard, TagPicker } from '@/components/ui';
-import { SKILLS } from '@/lib/mock';
-import type { CommitmentLevel } from '@/lib/mock/types';
+import type { CommitmentLevel, Skill } from '@/lib/data';
 
 import { MAX_ROLES, MAX_SKILLS, type RoleDraft } from '@/hooks/usePostProjectForm';
 
@@ -16,13 +15,12 @@ const COMMITMENTS: { value: CommitmentLevel; label: string }[] = [
 
 const COLLABORATION_STYLES = ['Remote', 'In-person', 'Async', 'Scheduled calls', 'Flexible'];
 
-const skillOptions = SKILLS.map((s) => ({ id: s.id, name: s.name }));
-
 export interface LookingForSectionProps {
   roles: RoleDraft[];
   skillsNeeded: string[];
   commitment: CommitmentLevel;
   collaborationStyle: string[];
+  skills: Skill[];
   addRole: () => void;
   removeRole: (id: string) => void;
   updateRole: (id: string, patch: Partial<Omit<RoleDraft, 'id'>>) => void;
@@ -40,6 +38,7 @@ export function LookingForSection({
   skillsNeeded,
   commitment,
   collaborationStyle,
+  skills,
   addRole,
   removeRole,
   updateRole,
@@ -48,6 +47,7 @@ export function LookingForSection({
   toggleCollaborationStyle,
 }: LookingForSectionProps) {
   const atRoleMax = roles.length >= MAX_ROLES;
+  const skillOptions = skills.map((s) => ({ id: s.id, name: s.name }));
 
   return (
     <div className="flex flex-col gap-6">
