@@ -10,6 +10,8 @@ Phase 1 built the 4 core screens (Home, Project Detail, Post a Project, Profile)
 
 ## Commands
 
+Requires `.env.local` (gitignored, not committed — recreate it if missing) with `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `DATABASE_URL` (Supabase pooled/pgbouncer connection string, port 6543), and `NEXT_PUBLIC_APP_URL`. Without these, `npm run dev` runs but every data-fetching route throws (Prisma/Supabase client init fails).
+
 ```bash
 npm run dev        # start dev server (falls back to :3001, :3002... if :3000 is taken)
 npm run build       # production build; also runs type-checking and linting
@@ -48,6 +50,8 @@ Each `components/*` subfolder has a barrel `index.ts` re-exporting components + 
 **`Project.description` is a single `String @db.Text` in the real schema** (not `string[]` like the old mock shape) — paragraphs are joined with `"\n\n"` on write and split on `"\n\n"` on render. `lib/data/index.ts`'s `mapProject()` does the split; `app/(main)/projects/new/actions.ts`'s `createProject` writes the form's single description string as-is (the Post-a-Project form was already one textarea, no join needed there). If you touch either write or read path, keep this convention in sync.
 
 Prisma's generated types return nullable columns as `T | null`; `lib/mock/types.ts`'s shapes use `T | undefined` (optional fields). `lib/data/index.ts`'s `mapUser`/`mapProject`/`mapSkill`/`mapDomain` do the `?? undefined` normalization — don't return raw Prisma rows to components without going through these mappers.
+
+`lib/validations/{auth,project,message}.ts` hold the zod schemas for every real server-side write (signup/login field validation, `createProject`, `sendMessage`) — this is the hard-enforcement layer behind the UI's soft client-side limits (e.g. title ≤80 chars is also checked in the reducer, but the zod schema is what actually rejects a bad write). Add new schemas here rather than validating inline in a Server Action.
 
 ### Auth
 
