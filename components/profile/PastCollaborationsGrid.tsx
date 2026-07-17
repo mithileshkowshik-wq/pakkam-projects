@@ -18,11 +18,16 @@ export const mockPastCollaborations: PastCollaboration[] = [
 
 export function PastCollaborationsGrid({ collaborations }: PastCollaborationsGridProps) {
   return (
-    <div className="grid grid-cols-2 gap-4 mt-4">
+    <div className="mt-4 grid grid-cols-1 gap-4 tablet:grid-cols-2">
       {collaborations.map((c) => (
-        <div key={`${c.title}-${c.role}`}>
-          <div className="h-[130px] bg-gradient-to-br from-tag-bg to-bg border border-border rounded-md flex items-center justify-center text-[11px] font-mono text-accent-border">
-            project cover
+        <div key={`${c.title}-${c.role}`} className="group">
+          {/* No cover-image field exists in the data model — the placeholder leans into the brand's
+              venn-mark motif instead of pretending to be a missing photo. */}
+          <div className="relative flex h-[130px] items-center justify-center overflow-hidden rounded-md border border-border-light bg-gradient-to-br from-tag-bg via-bg to-teal-bg/50 transition-shadow duration-200 group-hover:shadow-card">
+            <svg width="72" height="44" viewBox="0 0 72 44" fill="none" aria-hidden className="opacity-60">
+              <circle cx="26" cy="22" r="17" stroke="#F5C6C9" strokeWidth="5" />
+              <circle cx="46" cy="22" r="17" stroke="#F5C6C9" strokeWidth="5" />
+            </svg>
           </div>
           <H3 className="mt-2.5">{c.title}</H3>
           <Meta>Role · {c.role}</Meta>

@@ -28,8 +28,11 @@ export default async function MainLayout({ children }: { children: React.ReactNo
           screen width isn't known at request time, so this stays a pure-CSS split, not JS branching. */}
       <div className="flex min-h-screen bg-bg">
         <Sidebar currentUser={currentUser} />
-        {/* Extra bottom padding <768px so the fixed BottomNav doesn't overlap page content. */}
-        <main className="min-w-0 flex-1 p-[34px_40px] pb-24 tablet:pb-[34px]">{children}</main>
+        {/* Extra bottom padding <768px so the fixed BottomNav (+ raised FAB) doesn't overlap content.
+            Inner wrapper caps line lengths on ultrawide viewports without touching per-screen layout. */}
+        <main className="min-w-0 flex-1 px-5 py-7 pb-28 tablet:px-8 tablet:py-8 tablet:pb-8 desktop:px-10 desktop:py-9">
+          <div className="mx-auto w-full max-w-[1280px]">{children}</div>
+        </main>
         <BottomNav currentUser={currentUser} />
       </div>
     </UnreadProvider>

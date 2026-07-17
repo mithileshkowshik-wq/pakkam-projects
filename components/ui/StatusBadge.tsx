@@ -19,13 +19,13 @@ export function StatusBadge({ stage, className }: StatusBadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-[7px] whitespace-nowrap rounded-pill px-3 py-[5px] text-[12.5px] font-semibold',
+        'inline-flex items-center gap-[7px] whitespace-nowrap rounded-pill px-3 py-[5px] text-label font-semibold ring-1 ring-inset ring-black/[.03]',
         style.badge,
         className,
       )}
     >
       {/* dot colour is intentionally distinct from text (e.g. idea dot #EF626C vs idea text #C23F49) */}
-      <span className={cn('h-[7px] w-[7px] rounded-full', style.dot)} aria-hidden />
+      <span className={cn('h-[7px] w-[7px] rounded-full', style.dot, variant === 'prog' && 'animate-pulse')} aria-hidden />
       {label}
     </span>
   );

@@ -1,4 +1,5 @@
 import type { Config } from "tailwindcss";
+import animate from "tailwindcss-animate";
 
 const config: Config = {
   content: [
@@ -46,17 +47,48 @@ const config: Config = {
         display: ["var(--font-space-grotesk)", "sans-serif"],
         mono: ["var(--font-jetbrains-mono)", "monospace"],
       },
+      // Named steps for the sizes the app reaches for constantly — replaces the scattered
+      // text-[11px]/text-[13px]/text-[14.5px] arbitrary values in components touched this pass.
+      fontSize: {
+        fine: ["11px", { lineHeight: "1.4" }],
+        label: ["12.5px", { lineHeight: "1.4" }],
+        meta: ["13px", { lineHeight: "1.5" }],
+        note: ["13.5px", { lineHeight: "1.5" }],
+        body: ["14.5px", { lineHeight: "1.55" }],
+      },
       boxShadow: {
-        card: "0 2px 8px rgba(26,26,46,.045)",
+        // Layered, softer resting card shadow (was a single flat blur).
+        card: "0 1px 2px rgba(34,24,28,.04), 0 6px 18px -6px rgba(34,24,28,.07)",
+        // Hover elevation for interactive cards — warm coral tint so lift reads on the pink page bg.
+        "card-hover":
+          "0 2px 4px rgba(34,24,28,.05), 0 18px 36px -14px rgba(239,98,108,.22)",
         accent: "0 14px 33px -14px rgba(239,98,108,.35)",
         "btn-primary": "0 10px 24px -8px rgba(239,98,108,.65)",
         "chip-primary": "0 6px 16px -6px rgba(239,98,108,.7)",
+        // Floating action button / hero CTA glow.
+        fab: "0 10px 24px -6px rgba(239,98,108,.55), 0 2px 6px rgba(239,98,108,.28)",
+        // Popover/modal-weight elevation (auth card, etc.).
+        pop: "0 24px 60px -20px rgba(34,24,28,.28), 0 0 0 1px rgba(34,24,28,.03)",
+        // Upward shadow for the mobile bottom tab bar.
+        rail: "0 -10px 30px -14px rgba(34,24,28,.22)",
         shell:
           "0 30px 70px -24px rgba(26,26,46,.42), 0 0 0 1px rgba(26,26,46,.05)",
         focus: "0 0 0 4px rgba(239,98,108,.10)",
       },
+      backgroundImage: {
+        // The single brand gradient — buttons, FAB, active accents all share this exact ramp.
+        "brand-gradient": "linear-gradient(120deg,#F4868D 0%,#EF626C 58%,#DE4E59 100%)",
+        // Profile banner: wider, softer three-stop sweep.
+        "banner-gradient":
+          "linear-gradient(115deg,#F7A9AE 0%,#EF626C 52%,#D64550 100%)",
+        // Barely-there warm sheen for accent cards (white → blush).
+        "card-sheen": "linear-gradient(165deg,#FFFFFF 55%,#FFF3F4 100%)",
+      },
+      transitionTimingFunction: {
+        "out-soft": "cubic-bezier(.22,.61,.36,1)",
+      },
     },
   },
-  plugins: [],
+  plugins: [animate],
 };
 export default config;

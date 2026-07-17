@@ -8,8 +8,8 @@ export interface RoleListItemProps {
 
 export function RoleListItem({ index, title, description }: RoleListItemProps) {
   return (
-    <div className="flex items-start gap-3">
-      <span className="flex h-[30px] w-[30px] flex-none items-center justify-center rounded-[9px] bg-tag-bg font-mono text-[11px] font-semibold text-tag-text">
+    <div className="flex items-start gap-3.5">
+      <span className="flex h-8 w-8 flex-none items-center justify-center rounded-[10px] bg-gradient-to-br from-tag-bg to-accent-border/50 font-mono text-fine font-semibold text-primary-hover ring-1 ring-inset ring-primary/10">
         {String(index).padStart(2, '0')}
       </span>
       <div className="min-w-0">

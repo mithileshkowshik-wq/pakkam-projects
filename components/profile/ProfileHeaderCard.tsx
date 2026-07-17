@@ -19,9 +19,22 @@ export function ProfileHeaderCard({ user, isOwner }: ProfileHeaderCardProps) {
   const skillsOverflow = user.skills.length - MAX_SKILLS;
 
   return (
-    <Card className="p-0 overflow-hidden">
-      {/* design banner is a 120deg three-stop gradient — approximated left-to-right */}
-      <div className="h-[104px] bg-gradient-to-r from-primary-light via-primary to-primary-light" />
+    <Card className="overflow-hidden p-0">
+      {/* Brand banner with the venn-mark motif echoed as oversized translucent circle outlines. */}
+      <div className="relative h-[116px] overflow-hidden bg-banner-gradient">
+        <div
+          aria-hidden
+          className="absolute -top-14 right-6 h-40 w-40 rounded-full border-[10px] border-white/15"
+        />
+        <div
+          aria-hidden
+          className="absolute -top-6 right-24 h-28 w-28 rounded-full border-[10px] border-white/10"
+        />
+        <div
+          aria-hidden
+          className="absolute -bottom-20 -left-10 h-44 w-44 rounded-full bg-white/10 blur-2xl"
+        />
+      </div>
 
       <div className="px-6 pb-6">
         <div className="flex items-start justify-between gap-4">
@@ -44,14 +57,17 @@ export function ProfileHeaderCard({ user, isOwner }: ProfileHeaderCardProps) {
           )}
         </div>
 
-        <H1 className="text-[28px] mt-3.5">{user.name}</H1>
+        <H1 className="mt-3.5 text-[28px]">{user.name}</H1>
+        {user.headline && (
+          <p className="mt-1 text-[15px] font-medium text-primary-hover">{user.headline}</p>
+        )}
         {user.bio && <Sub className="mt-1.5">{user.bio}</Sub>}
 
-        <div className="flex gap-2 items-center flex-wrap mt-3">
+        <div className="mt-3.5 flex flex-wrap items-center gap-2">
           {/* StatusBadge is typed to ProjectStage; this teal "Available" pill is a one-off, so
               built inline with the same teal tokens rather than bending StatusBadge's prop type. */}
-          <span className="inline-flex items-center gap-[7px] whitespace-nowrap rounded-pill bg-teal-bg px-3 py-[5px] text-[12.5px] font-semibold text-teal-text">
-            <span className="h-[7px] w-[7px] rounded-full bg-teal" aria-hidden />
+          <span className="inline-flex items-center gap-[7px] whitespace-nowrap rounded-pill bg-teal-bg px-3 py-[5px] text-label font-semibold text-teal-text ring-1 ring-inset ring-teal/20">
+            <span className="h-[7px] w-[7px] animate-pulse rounded-full bg-teal" aria-hidden />
             {AVAILABILITY_LABEL[user.availabilityLevel]}
           </span>
 
@@ -63,33 +79,37 @@ export function ProfileHeaderCard({ user, isOwner }: ProfileHeaderCardProps) {
           )}
         </div>
 
-        <div className="mt-4">
-          <MonoLabel>Skills</MonoLabel>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {user.skills.slice(0, MAX_SKILLS).map((s) => (
-              <Chip key={s.id} variant="tag" size="sm">
-                {s.name}
-              </Chip>
-            ))}
-            {skillsOverflow > 0 && (
-              <Chip variant="mut" size="sm">
-                +{skillsOverflow}
-              </Chip>
-            )}
+        {user.skills.length > 0 && (
+          <div className="mt-5">
+            <MonoLabel>Skills</MonoLabel>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {user.skills.slice(0, MAX_SKILLS).map((s) => (
+                <Chip key={s.id} variant="tag" size="sm">
+                  {s.name}
+                </Chip>
+              ))}
+              {skillsOverflow > 0 && (
+                <Chip variant="mut" size="sm">
+                  +{skillsOverflow}
+                </Chip>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
-        <div className="mt-4">
-          <MonoLabel>Into</MonoLabel>
-          <div className="flex flex-wrap gap-2 mt-2">
-            {user.domains.map((d) => (
-              <Chip key={d.id} variant="mut" size="sm">
-                {d.emoji ? `${d.emoji} ` : ''}
-                {d.name}
-              </Chip>
-            ))}
+        {user.domains.length > 0 && (
+          <div className="mt-4">
+            <MonoLabel>Into</MonoLabel>
+            <div className="mt-2 flex flex-wrap gap-2">
+              {user.domains.map((d) => (
+                <Chip key={d.id} variant="mut" size="sm">
+                  {d.emoji ? `${d.emoji} ` : ''}
+                  {d.name}
+                </Chip>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Card>
   );

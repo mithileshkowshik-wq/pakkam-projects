@@ -16,14 +16,13 @@ export function EmptyState({ icon, heading, subtext, action, className }: EmptyS
   return (
     <div
       className={cn(
-        // dashed border colour #E0CFD2 has no token — border (#E7D9DC) is the nearest
-        'flex flex-col items-center gap-[9px] rounded-md border border-dashed border-border bg-surface p-[34px] text-center',
+        'flex flex-col items-center gap-[9px] rounded-lg border border-dashed border-accent-border/70 bg-surface/70 p-[34px] text-center duration-300 ease-out-soft animate-in fade-in slide-in-from-bottom-2',
         className,
       )}
     >
       <span
         aria-hidden
-        className="flex h-[46px] w-[46px] items-center justify-center rounded-full bg-tag-bg text-primary"
+        className="flex h-[46px] w-[46px] items-center justify-center rounded-full bg-gradient-to-br from-tag-bg to-accent-border/60 text-primary shadow-[inset_0_0_0_1px_rgba(239,98,108,.12)]"
       >
         {icon}
       </span>

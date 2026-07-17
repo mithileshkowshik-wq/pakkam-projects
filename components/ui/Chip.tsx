@@ -11,7 +11,7 @@ const chipVariants = cva(
       variant: {
         // default text colour #4b5563 has no token — mapped to text-secondary (closest neutral)
         default: 'border-border bg-surface text-text-secondary',
-        fill: 'border-primary bg-primary text-white shadow-chip-primary',
+        fill: 'border-transparent bg-brand-gradient text-white shadow-chip-primary',
         tag: 'border-transparent bg-tag-bg text-tag-text',
         mut: 'border-border bg-bg text-text-secondary',
       },
@@ -80,6 +80,7 @@ export function Chip({
         className={cn(
           chipVariants({ variant, size }),
           'cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-offset-2',
+          !selected && 'hover:-translate-y-px hover:border-accent-border hover:text-primary-hover',
           className,
         )}
       >

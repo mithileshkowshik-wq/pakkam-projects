@@ -1,6 +1,7 @@
 'use client';
 
 import { Inbox } from 'lucide-react';
+import Link from 'next/link';
 import { useState, useTransition } from 'react';
 
 import { Avatar, Button, Card, EmptyState, H2, Meta, SectionDivider } from '@/components/ui';
@@ -17,7 +18,14 @@ export function IncomingRequestsCard({ requests: initialRequests }: IncomingRequ
 
   return (
     <Card className="flex flex-col gap-3">
-      <H2>Requests to join</H2>
+      <div className="flex items-center justify-between gap-2">
+        <H2>Requests to join</H2>
+        {requests.length > 0 && (
+          <span className="flex h-[22px] min-w-[22px] items-center justify-center rounded-pill bg-brand-gradient px-1.5 text-fine font-bold text-white shadow-chip-primary">
+            {requests.length}
+          </span>
+        )}
+      </div>
 
       {requests.length === 0 ? (
         <EmptyState
@@ -59,16 +67,32 @@ function RequestRow({
 
   return (
     <div className="flex items-start gap-3">
-      <Avatar size={40} name={request.requester.name} src={request.requester.avatarUrl} />
+      <Link href={`/profile/${request.requester.username}`} className="flex-none">
+        <Avatar
+          size={40}
+          name={request.requester.name}
+          src={request.requester.avatarUrl}
+          className="transition-transform duration-200 ease-out-soft hover:scale-105"
+        />
+      </Link>
       <div className="min-w-0 flex-1">
         <div className="flex items-baseline justify-between gap-2">
-          <p className="truncate text-[14px] font-semibold text-ink">{request.requester.name}</p>
+          <Link
+            href={`/profile/${request.requester.username}`}
+            className="truncate text-[14px] font-semibold text-ink hover:underline"
+          >
+            {request.requester.name}
+          </Link>
           <Meta className="flex-none text-[11.5px] text-text-meta">{formatRelativeDate(request.createdAt)}</Meta>
         </div>
         {request.requester.headline && (
           <p className="truncate text-[12.5px] text-text-secondary">{request.requester.headline}</p>
         )}
-        {request.message && <p className="mt-1.5 text-[13px] leading-[1.5] text-text-secondary">{request.message}</p>}
+        {request.message && (
+          <p className="mt-2 rounded-[10px] rounded-tl-none bg-bg/70 px-3 py-2 text-meta leading-[1.5] text-text-secondary">
+            {request.message}
+          </p>
+        )}
 
         <div className="mt-2.5 flex gap-2">
           <Button

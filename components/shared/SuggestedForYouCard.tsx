@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 import type { User } from '@/lib/mock/types';
 import { Avatar, Card, Chip, H3, Meta, SectionDivider } from '@/components/ui';
 
@@ -8,7 +10,10 @@ export interface SuggestedForYouCardProps {
 export function SuggestedForYouCard({ people }: SuggestedForYouCardProps) {
   return (
     <Card>
-      <H3>Suggested for you</H3>
+      <div className="flex items-center gap-2">
+        <span aria-hidden className="h-1.5 w-1.5 rounded-full bg-brand-gradient" />
+        <H3>Suggested for you</H3>
+      </div>
       <Meta className="mt-0.5 text-text-meta">Based on your skills &amp; interests</Meta>
 
       {people.length === 0 ? (
@@ -21,10 +26,15 @@ export function SuggestedForYouCard({ people }: SuggestedForYouCardProps) {
             {people.map((person, i) => (
               <div key={person.id}>
                 {i > 0 && <SectionDivider tight className="my-3" />}
-                <div className="flex items-start gap-3">
+                <Link
+                  href={`/profile/${person.username}`}
+                  className="group -mx-2 flex items-start gap-3 rounded-[12px] px-2 py-1.5 transition-colors duration-200 hover:bg-bg/70"
+                >
                   <Avatar size={42} name={person.name} src={person.avatarUrl} />
                   <div className="min-w-0 flex-1">
-                    <p className="truncate text-[14px] font-semibold text-ink">{person.name}</p>
+                    <p className="truncate text-[14px] font-semibold text-ink transition-colors duration-200 group-hover:text-primary-hover">
+                      {person.name}
+                    </p>
                     {person.headline && (
                       <p className="truncate text-[12.5px] text-text-secondary">{person.headline}</p>
                     )}
@@ -38,13 +48,13 @@ export function SuggestedForYouCard({ people }: SuggestedForYouCardProps) {
                       </div>
                     )}
                   </div>
-                </div>
+                </Link>
               </div>
             ))}
           </div>
 
           {/* Non-functional visual affordance: there's no "all suggestions" screen in scope this pass. */}
-          <span className="mt-4 inline-block text-[13.5px] font-semibold text-primary">View all →</span>
+          <span className="mt-4 inline-block text-note font-semibold text-primary">View all →</span>
         </>
       )}
     </Card>

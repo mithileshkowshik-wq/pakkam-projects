@@ -28,7 +28,7 @@ export default async function ProfilePage({ params }: ProfilePageProps) {
   const activeProjects = await getProjectsByOwner(user.id);
 
   return (
-    <div className="mx-auto max-w-[680px]">
+    <div className="mx-auto max-w-[680px] duration-500 ease-out-soft animate-in fade-in slide-in-from-bottom-2">
       <ProfileHeaderCard user={user} isOwner={isOwner} />
 
       <SectionDivider />

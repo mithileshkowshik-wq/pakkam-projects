@@ -3,7 +3,19 @@
 @tailwind utilities;
 
 body {
-  background: theme("colors.bg");
+  background-color: theme("colors.bg");
+  /* Ambient warmth: a coral wash bleeding in from the top-right and a faint teal
+     counter-glow bottom-left, fixed so scrolling content moves over the light. */
+  background-image:
+    radial-gradient(1100px 520px at 88% -12%, rgba(244, 134, 141, 0.16), transparent 62%),
+    radial-gradient(900px 480px at -8% 104%, rgba(43, 184, 166, 0.08), transparent 58%);
+  background-attachment: fixed;
   color: theme("colors.ink.DEFAULT");
   font-family: theme("fontFamily.sans");
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+::selection {
+  background: rgba(239, 98, 108, 0.22);
 }

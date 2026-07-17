@@ -19,8 +19,8 @@ const ICON_MAP: Record<string, LucideIcon> = {
 function IconLab({ icon: Icon, label }: { icon: LucideIcon; label: string }) {
   return (
     <div className="flex items-center gap-2.5">
-      <span className="flex h-8 w-8 flex-none items-center justify-center rounded-[9px] bg-tag-bg text-primary">
-        <Icon className="h-[18px] w-[18px]" aria-hidden />
+      <span className="flex h-8 w-8 flex-none items-center justify-center rounded-[10px] bg-gradient-to-br from-tag-bg to-accent-border/50 text-primary ring-1 ring-inset ring-primary/10">
+        <Icon className="h-4 w-4" aria-hidden />
       </span>
       <span className="text-[14px] font-medium text-ink">{label}</span>
     </div>

@@ -16,22 +16,27 @@ export interface NavItemProps {
 }
 
 // <desktop the rail is icon-only: center the icon, drop the label + horizontal padding.
+// `relative` anchors the active-state coral indicator bar pinned to the item's left edge.
 const BASE =
-  'flex items-center justify-center gap-3 rounded-[11px] px-0 py-[11px] text-[14.5px] font-medium transition-colors desktop:justify-start desktop:px-[13px]';
-// active gradient approximates linear-gradient(100deg, rgba(244,134,141,.22), rgba(239,98,108,.08))
-const ACTIVE =
-  'bg-gradient-to-r from-primary-light/[.22] to-primary/[.08] text-white shadow-[inset_0_0_0_1px_rgba(244,134,141,.35)]';
-const INACTIVE = 'text-sidebar-nav hover:text-white';
+  'relative flex items-center justify-center gap-3 rounded-[11px] px-0 py-[11px] text-[14.5px] font-medium transition-colors duration-200 desktop:justify-start desktop:px-[13px]';
+const ACTIVE = 'bg-white/[.07] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,.07)]';
+const INACTIVE = 'text-sidebar-nav hover:bg-white/[.04] hover:text-white';
 
 export function NavItem({ href, icon: Icon, label, active, disabled, badge }: NavItemProps) {
   const content = (
     <>
+      {active && (
+        <span
+          aria-hidden
+          className="absolute -left-px top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-brand-gradient shadow-chip-primary"
+        />
+      )}
       <span className="relative flex-none">
-        <Icon className="h-[18px] w-[18px]" aria-hidden />
+        <Icon className={cn('h-[18px] w-[18px]', active && 'text-primary-light')} aria-hidden />
         {!!badge && badge > 0 && (
           <span
             aria-hidden
-            className="absolute -right-1.5 -top-1.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-pill bg-primary px-[3px] text-[9.5px] font-bold leading-none text-white"
+            className="absolute -right-1.5 -top-1.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-pill bg-brand-gradient px-[3px] text-[9.5px] font-bold leading-none text-white shadow-chip-primary"
           >
             {badge > 9 ? '9+' : badge}
           </span>
@@ -55,7 +60,12 @@ export function NavItem({ href, icon: Icon, label, active, disabled, badge }: Na
   }
 
   return (
-    <Link href={href} className={cn(BASE, active ? ACTIVE : INACTIVE)} aria-label={label}>
+    <Link
+      href={href}
+      className={cn(BASE, active ? ACTIVE : INACTIVE)}
+      aria-label={label}
+      aria-current={active ? 'page' : undefined}
+    >
       {content}
     </Link>
   );

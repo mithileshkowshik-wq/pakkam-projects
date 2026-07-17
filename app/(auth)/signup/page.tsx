@@ -55,7 +55,7 @@ export default function SignupPage() {
   };
 
   return (
-    <Card>
+    <Card className="p-7 shadow-pop">
       <H1 className="text-[26px]">Create your account</H1>
       <Sub className="mt-1.5">Find people to build your next project with.</Sub>
 

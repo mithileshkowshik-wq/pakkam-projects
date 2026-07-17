@@ -21,18 +21,23 @@ export function ProjectUpdateList({ updates }: ProjectUpdateListProps) {
   const visible = expanded || !canCollapse ? updates : updates.slice(0, INITIAL_VISIBLE);
 
   return (
-    <div className="flex flex-col gap-3">
+    // Timeline treatment: a hairline rail with coral dots instead of a stack of boxed cards.
+    <div className="relative flex flex-col gap-5 pl-6 before:absolute before:bottom-2 before:left-[5px] before:top-2 before:w-px before:bg-border">
       {visible.map((update) => (
-        <div key={update.id} className="rounded-md border border-border bg-surface p-4">
+        <div key={update.id} className="relative">
+          <span
+            aria-hidden
+            className="absolute -left-6 top-[3px] h-[11px] w-[11px] rounded-full bg-brand-gradient shadow-chip-primary ring-[3px] ring-bg"
+          />
           <MonoLabel>{formatDate(update.createdAt)}</MonoLabel>
-          <Sub className="mt-1 text-[13.5px]">{update.content}</Sub>
+          <Sub className="mt-1 text-note">{update.content}</Sub>
         </div>
       ))}
       {canCollapse && !expanded && (
         <button
           type="button"
           onClick={() => setExpanded(true)}
-          className="self-start text-[13.5px] font-semibold text-primary hover:text-primary-hover"
+          className="self-start text-note font-semibold text-primary transition-colors hover:text-primary-hover"
         >
           Show more →
         </button>

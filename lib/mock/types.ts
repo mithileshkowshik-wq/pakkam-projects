@@ -44,4 +44,5 @@ export interface Project {
   updates: ProjectUpdate[];
   owner: Pick<User, 'id'|'username'|'name'|'avatarUrl'|'headline'>;
   viewingCount?: number;
+  collaborators?: Pick<User, 'id'|'username'|'name'|'avatarUrl'|'headline'>[];
 }

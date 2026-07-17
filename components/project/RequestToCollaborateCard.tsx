@@ -38,11 +38,11 @@ export function RequestToCollaborateCard({ projectId, initialStatus }: RequestTo
       <H2>Interested in joining?</H2>
 
       {status === 'PENDING' ? (
-        <div className="flex justify-center py-2">
+        <div className="flex justify-center py-2 duration-300 ease-out-soft animate-in fade-in zoom-in-95">
           <Chip variant="fill">Request sent ✓</Chip>
         </div>
       ) : status === 'ACCEPTED' ? (
-        <div className="flex justify-center py-2">
+        <div className="flex justify-center py-2 duration-300 ease-out-soft animate-in fade-in zoom-in-95">
           <Chip variant="fill">You&apos;re a collaborator 🎉</Chip>
         </div>
       ) : (

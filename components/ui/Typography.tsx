@@ -11,7 +11,7 @@ export function H1({ children, className }: TypographyProps) {
   return (
     <h1
       className={cn(
-        'font-display text-[30px] font-extrabold leading-[1.1] tracking-[-0.02em] text-ink',
+        'font-display text-[30px] font-bold leading-[1.08] tracking-[-0.025em] text-ink',
         className,
       )}
     >

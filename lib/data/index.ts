@@ -43,6 +43,7 @@ const PROJECT_INCLUDE = {
   links: true,
   updates: { orderBy: { createdAt: 'desc' as const } },
   owner: { select: OWNER_SELECT },
+  collaborations: { include: { user: { select: OWNER_SELECT } } },
 } as const;
 
 // Raw Prisma row shapes (nullable columns come back as `| null`, not `| undefined`).
@@ -84,6 +85,9 @@ type ProjectRow = {
   links: { id: string; label: string; url: string }[];
   updates: { id: string; content: string; createdAt: Date }[];
   owner: { id: string; username: string; name: string; avatarUrl: string | null; headline: string | null };
+  collaborations: {
+    user: { id: string; username: string; name: string; avatarUrl: string | null; headline: string | null };
+  }[];
 };
 
 function mapSkill(row: SkillRow): Skill {
@@ -141,6 +145,13 @@ function mapProject(row: ProjectRow): Project {
       avatarUrl: row.owner.avatarUrl ?? undefined,
       headline: row.owner.headline ?? undefined,
     },
+    collaborators: row.collaborations.map((c) => ({
+      id: c.user.id,
+      username: c.user.username,
+      name: c.user.name,
+      avatarUrl: c.user.avatarUrl ?? undefined,
+      headline: c.user.headline ?? undefined,
+    })),
   };
 }
 
@@ -161,6 +172,19 @@ export async function getProjectsByOwner(ownerId: string): Promise<Project[]> {
     orderBy: { updatedAt: 'desc' },
   });
   return rows.map(mapProject);
+}
+
+/** Batched, not per-project (N+1) — the My Projects page needs this across every project a user
+ * owns, unlike the project-detail page's getPendingCollabRequests which fetches full requester
+ * objects for one project's IncomingRequestsCard. */
+export async function getPendingCollabRequestCounts(projectIds: string[]): Promise<Record<string, number>> {
+  if (projectIds.length === 0) return {};
+  const rows = await prisma.collabRequest.groupBy({
+    by: ['projectId'],
+    where: { projectId: { in: projectIds }, status: 'PENDING' },
+    _count: { _all: true },
+  });
+  return Object.fromEntries(rows.map((r) => [r.projectId, r._count._all]));
 }
 
 /** Weighted match (skill/domain overlap + availability), scored in JS over a bounded,

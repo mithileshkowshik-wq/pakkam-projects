@@ -16,9 +16,10 @@ export interface BottomNavProps {
  * <768px bottom tab bar that replaces the sidebar entirely. CSS-only visibility (`tablet:hidden`)
  * so there's no hydration mismatch. Reuses the Sidebar's href logic.
  *
- * Judgment call: the desktop gradient "Post a Project" CTA becomes an ordinary 5th tab here (a
- * plain Plus icon, no special styling) per the spec's "5 tab icons" framing — a floating gradient
- * pill would fight the flat tab-bar layout.
+ * Design decision (revisits the earlier "plain 5th tab" call): "Post a Project" is the app's
+ * primary action, so on mobile it gets the classic raised center FAB — the same brand gradient as
+ * the Sidebar CTA — flanked by the four ordinary tabs. The bar itself is translucent + blurred
+ * with an upward shadow so it reads as a floating dock rather than a hard cutoff.
  */
 export function BottomNav({ currentUser }: BottomNavProps) {
   const pathname = usePathname();
@@ -26,20 +27,36 @@ export function BottomNav({ currentUser }: BottomNavProps) {
   const profileHref = `/profile/${currentUser.username}`;
   const isHome = pathname === '/home';
   const isProfile = pathname.startsWith('/profile');
+  const isMyProjects = pathname === '/projects';
   const isNew = pathname.startsWith('/projects/new');
   const isMessages = pathname.startsWith('/messages');
 
   return (
     <nav
       aria-label="Primary"
-      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border bg-surface pb-[env(safe-area-inset-bottom)] tablet:hidden"
+      className="fixed inset-x-0 bottom-0 z-40 flex border-t border-border-light bg-surface/90 pb-[env(safe-area-inset-bottom)] shadow-rail backdrop-blur-md tablet:hidden"
     >
       <Tab href="/home" icon={Compass} label="Home" active={isHome} />
-      {/* "My Projects" reasonably overlaps the owner's profile this pass (no dedicated screen in scope). */}
-      <Tab href={profileHref} icon={Folder} label="My Projects" active={isProfile} />
+      <Tab href="/projects" icon={Folder} label="Projects" active={isMyProjects} />
+
+      {/* Center FAB — pokes above the bar. aria-current keeps the active state announced even
+          though it's styled as a button, not a tab. */}
+      <div className="flex flex-1 items-start justify-center">
+        <Link
+          href="/projects/new"
+          aria-label="Post a Project"
+          aria-current={isNew ? 'page' : undefined}
+          className={cn(
+            '-mt-[22px] flex h-[52px] w-[52px] items-center justify-center rounded-full bg-brand-gradient text-white shadow-fab ring-4 ring-surface transition-transform duration-200 ease-out-soft active:scale-95',
+            isNew && 'ring-accent-border',
+          )}
+        >
+          <Plus className="h-6 w-6" aria-hidden />
+        </Link>
+      </div>
+
       <Tab href="/messages" icon={MessageSquare} label="Messages" active={isMessages} badge={unreadCount} />
       <Tab href={profileHref} icon={UserIcon} label="Profile" active={isProfile} />
-      <Tab href="/projects/new" icon={Plus} label="Post a Project" active={isNew} />
     </nav>
   );
 }
@@ -54,23 +71,23 @@ interface TabProps {
 }
 
 const TAB_BASE =
-  'flex flex-1 flex-col items-center justify-center gap-1 py-2 text-[10.5px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary';
+  'flex flex-1 flex-col items-center justify-center gap-1 py-2.5 text-[10.5px] font-medium transition-colors duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary';
 
 function Tab({ href, icon: Icon, label, active, disabled, badge }: TabProps) {
   const content = (
     <>
       <span className="relative">
-        <Icon className="h-5 w-5" aria-hidden />
+        <Icon className="h-5 w-5" aria-hidden strokeWidth={active ? 2.4 : 2} />
         {!!badge && badge > 0 && (
           <span
             aria-hidden
-            className="absolute -right-1.5 -top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-pill bg-primary px-[3px] text-[9px] font-bold leading-none text-white"
+            className="absolute -right-1.5 -top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-pill bg-brand-gradient px-[3px] text-[9px] font-bold leading-none text-white"
           >
             {badge > 9 ? '9+' : badge}
           </span>
         )}
       </span>
-      <span>{label}</span>
+      <span className={cn(active && 'font-semibold')}>{label}</span>
     </>
   );
 

@@ -24,7 +24,7 @@ export function ActiveProjectsRow({ projects }: ActiveProjectsRowProps) {
           />
         </div>
       ) : (
-        <div className="flex gap-4 overflow-x-auto mt-4 pb-1">
+        <div className="-mx-1 mt-4 flex snap-x gap-4 overflow-x-auto px-1 pb-2">
           {projects.map((p) => (
             <ProjectCard key={p.id} project={p} compact />
           ))}

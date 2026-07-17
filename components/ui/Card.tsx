@@ -12,10 +12,10 @@ export function Card({ accent, className, children }: CardProps) {
   return (
     <div
       className={cn(
-        'rounded-md bg-surface p-5',
+        'rounded-lg p-5',
         accent
-          ? 'border border-accent-border shadow-accent'
-          : 'border border-border shadow-card',
+          ? 'border border-accent-border bg-card-sheen shadow-accent'
+          : 'border border-border/80 bg-surface shadow-card',
         className,
       )}
     >

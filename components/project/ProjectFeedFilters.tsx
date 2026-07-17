@@ -1,11 +1,11 @@
 'use client';
 
-import { ChevronDown, Rocket, SearchX } from 'lucide-react';
+import { ChevronDown, Rocket, Search, SearchX } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { ProjectCard } from '@/components/project/ProjectCard';
-import { Chip, EmptyState } from '@/components/ui';
+import { Chip, EmptyState, Input } from '@/components/ui';
 import type { CommitmentLevel, Domain, Project, ProjectStage } from '@/lib/mock/types';
 import { cn } from '@/lib/utils';
 
@@ -41,6 +41,7 @@ export function ProjectFeedFilters({ projects, domains }: ProjectFeedFiltersProp
   const [activeStage, setActiveStage] = useState<ProjectStage | typeof ALL>(ALL);
   const [activeCommitment, setActiveCommitment] = useState<CommitmentLevel | typeof ALL>(ALL);
   const [activeSkill, setActiveSkill] = useState<string>(ALL);
+  const [search, setSearch] = useState('');
 
   // Domains that actually appear in the feed, deduped by name, ordered to match `domains`.
   const feedDomains = useMemo(() => {
@@ -57,29 +58,48 @@ export function ProjectFeedFilters({ projects, domains }: ProjectFeedFiltersProp
     activeDomain === ALL &&
     activeStage === ALL &&
     activeCommitment === ALL &&
-    activeSkill === ALL;
+    activeSkill === ALL &&
+    search.trim() === '';
 
-  const filtered = useMemo(
-    () =>
-      projects.filter((p) => {
-        if (activeDomain !== ALL && !p.domains.some((d) => d.name === activeDomain)) return false;
-        if (activeStage !== ALL && p.stage !== activeStage) return false;
-        if (activeCommitment !== ALL && p.commitmentLevel !== activeCommitment) return false;
-        if (activeSkill !== ALL && !p.skills.some((s) => s.name === activeSkill)) return false;
-        return true;
-      }),
-    [projects, activeDomain, activeStage, activeCommitment, activeSkill],
-  );
+  const filtered = useMemo(() => {
+    const query = search.trim().toLowerCase();
+    return projects.filter((p) => {
+      if (activeDomain !== ALL && !p.domains.some((d) => d.name === activeDomain)) return false;
+      if (activeStage !== ALL && p.stage !== activeStage) return false;
+      if (activeCommitment !== ALL && p.commitmentLevel !== activeCommitment) return false;
+      if (activeSkill !== ALL && !p.skills.some((s) => s.name === activeSkill)) return false;
+      if (query) {
+        const haystack = `${p.title} ${p.pitch} ${p.owner.name} ${p.skills.map((s) => s.name).join(' ')}`.toLowerCase();
+        if (!haystack.includes(query)) return false;
+      }
+      return true;
+    });
+  }, [projects, activeDomain, activeStage, activeCommitment, activeSkill, search]);
 
   const clearFilters = () => {
     setActiveDomain(ALL);
     setActiveStage(ALL);
     setActiveCommitment(ALL);
     setActiveSkill(ALL);
+    setSearch('');
   };
 
   return (
     <div className="min-w-0 flex-1">
+      <div className="relative mt-6 w-full max-w-[440px]">
+        <Search
+          className="pointer-events-none absolute left-[18px] top-1/2 h-4 w-4 -translate-y-1/2 text-text-meta"
+          aria-hidden
+        />
+        <Input
+          className="rounded-pill border-border-light py-3 pl-11 shadow-card"
+          placeholder="Search projects, skills, people…"
+          aria-label="Search"
+          value={search}
+          onChange={(e) => setSearch(e.target.value)}
+        />
+      </div>
+
       <div className="my-6 flex flex-wrap items-center justify-between gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <Chip
@@ -125,7 +145,7 @@ export function ProjectFeedFilters({ projects, domains }: ProjectFeedFiltersProp
       </div>
 
       {filtered.length > 0 ? (
-        <div className="flex flex-col gap-4">
+        <div className="flex flex-col gap-4 duration-500 ease-out-soft animate-in fade-in slide-in-from-bottom-3">
           {filtered.map((p, i) => (
             <ProjectCard key={p.id} project={p} highlighted={i === 0 && noFiltersActive} />
           ))}
@@ -169,8 +189,10 @@ function FilterSelect({ label, value, onChange, options }: FilterSelectProps) {
         value={value}
         onChange={(e) => onChange(e.target.value)}
         className={cn(
-          'cursor-pointer appearance-none rounded-pill border bg-bg py-[7px] pl-[14px] pr-9 text-[13px] font-semibold transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
-          active ? 'border-primary text-ink' : 'border-border text-text-secondary',
+          'cursor-pointer appearance-none rounded-pill border py-[7px] pl-[14px] pr-9 text-meta font-semibold transition-all duration-200 ease-out-soft focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary',
+          active
+            ? 'border-primary/50 bg-tag-bg text-primary-hover'
+            : 'border-border bg-surface text-text-secondary hover:border-accent-border hover:text-ink',
         )}
       >
         <option value={ALL}>{label}</option>

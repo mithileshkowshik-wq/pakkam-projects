@@ -43,7 +43,7 @@ export default function LoginPage() {
   };
 
   return (
-    <Card>
+    <Card className="p-7 shadow-pop">
       <H1 className="text-[26px]">Welcome back</H1>
       <Sub className="mt-1.5">Log in to keep building.</Sub>
 

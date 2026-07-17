@@ -1,8 +1,10 @@
+import { ArrowRight } from 'lucide-react';
 import Link from 'next/link';
 
-import { COMMITMENT_LABEL } from '@/lib/constants';
 import type { Project } from '@/lib/mock/types';
-import { Avatar, Card, Chip, H2, H3, StatusBadge, Sub } from '@/components/ui';
+import { Card, Chip, H2, H3, StatusBadge, Sub } from '@/components/ui';
+
+import { OwnerInlineLink } from './OwnerInlineLink';
 
 export interface ProjectCardProps {
   project: Pick<
@@ -20,22 +22,41 @@ export interface ProjectCardProps {
 
 const MAX_SKILLS = 4;
 
+/** Rounded emoji tile — the card's visual anchor in a data model with no cover images. */
+function DomainTile({ emoji, size = 'md' }: { emoji?: string; size?: 'sm' | 'md' }) {
+  return (
+    <span
+      aria-hidden
+      className={
+        size === 'sm'
+          ? 'flex h-9 w-9 flex-none items-center justify-center rounded-[11px] bg-gradient-to-br from-tag-bg to-bg text-[17px] ring-1 ring-inset ring-primary/10'
+          : 'flex h-11 w-11 flex-none items-center justify-center rounded-[13px] bg-gradient-to-br from-tag-bg to-bg text-[21px] ring-1 ring-inset ring-primary/10 transition-transform duration-200 ease-out-soft group-hover:scale-105'
+      }
+    >
+      {emoji ?? '✦'}
+    </span>
+  );
+}
+
 export function ProjectCard({ project, highlighted, compact }: ProjectCardProps) {
   const domain = project.domains[0];
-  const category = domain && (
-    <Chip variant="tag" size="sm">
-      {domain.emoji ? `${domain.emoji} ` : ''}
-      {domain.name}
-    </Chip>
-  );
 
   if (compact) {
     return (
-      <Link href={`/projects/${project.id}`} className="block w-[220px] flex-none">
-        <Card className="flex h-full flex-col gap-2.5">
-          {category}
-          <H3>{project.title}</H3>
-          <StatusBadge stage={project.stage} className="self-start" />
+      <Link href={`/projects/${project.id}`} className="group block w-[220px] flex-none snap-start">
+        <Card className="flex h-full flex-col gap-3 transition-all duration-200 ease-out-soft group-hover:-translate-y-0.5 group-hover:border-accent-border group-hover:shadow-card-hover">
+          <div className="flex items-center gap-2.5">
+            <DomainTile emoji={domain?.emoji} size="sm" />
+            {domain && (
+              <span className="truncate font-mono text-[10.5px] font-medium uppercase tracking-[0.08em] text-tag-text">
+                {domain.name}
+              </span>
+            )}
+          </div>
+          <H3 className="transition-colors duration-200 group-hover:text-primary-hover">
+            {project.title}
+          </H3>
+          <StatusBadge stage={project.stage} className="mt-auto self-start" />
         </Card>
       </Link>
     );
@@ -43,15 +64,37 @@ export function ProjectCard({ project, highlighted, compact }: ProjectCardProps)
 
   const overflow = project.skills.length - MAX_SKILLS;
 
+  // Stretched-link pattern: the card is NOT itself an <a> (that nested OwnerInlineLink's <a>
+  // inside it — invalid HTML that caused a real hydration error). The title's Link carries an
+  // ::after overlay covering the whole card; OwnerInlineLink stacks above it with z-10.
   return (
-    <Link href={`/projects/${project.id}`} className="block">
-      <Card accent={highlighted} className="flex flex-col gap-3">
+    <div className="group relative">
+      <Card
+        accent={highlighted}
+        className="flex flex-col gap-3 transition-all duration-200 ease-out-soft group-hover:-translate-y-0.5 group-hover:border-accent-border group-hover:shadow-card-hover"
+      >
         <div className="flex items-start justify-between gap-3">
-          {category}
-          <StatusBadge stage={project.stage} />
+          <div className="flex min-w-0 items-center gap-3">
+            <DomainTile emoji={domain?.emoji} />
+            <div className="min-w-0">
+              {domain && (
+                <p className="truncate font-mono text-fine font-medium uppercase tracking-[0.08em] text-tag-text">
+                  {domain.name}
+                </p>
+              )}
+              <H2 className="mt-0.5 line-clamp-2 transition-colors duration-200 group-hover:text-primary-hover">
+                <Link
+                  href={`/projects/${project.id}`}
+                  className="after:absolute after:inset-0 after:z-0 after:rounded-lg"
+                >
+                  {project.title}
+                </Link>
+              </H2>
+            </div>
+          </div>
+          <StatusBadge stage={project.stage} className="flex-none" />
         </div>
 
-        <H2>{project.title}</H2>
         <Sub className="line-clamp-2">{project.pitch}</Sub>
 
         <div className="flex flex-wrap gap-2">
@@ -67,23 +110,18 @@ export function ProjectCard({ project, highlighted, compact }: ProjectCardProps)
           )}
         </div>
 
-        <div className="mt-[14px] flex items-center justify-between gap-3 border-t border-border-light pt-[14px]">
-          <div className="flex min-w-0 items-center gap-2.5">
-            <Avatar size={32} name={project.owner.name} src={project.owner.avatarUrl} />
-            <div className="min-w-0">
-              <p className="truncate text-[13.5px] font-semibold text-ink">{project.owner.name}</p>
-              <p className="truncate text-[13px] text-text-secondary">
-                {COMMITMENT_LABEL[project.commitmentLevel]}
-              </p>
-            </div>
-          </div>
-          {/* Visual affordance only: the whole Card is already a Link, so a real Button here would
-              nest an interactive <button> inside an <a>. Styled as a ghost button instead. */}
-          <span className="inline-flex flex-none items-center gap-2 rounded-sm border border-border px-[18px] py-2.5 text-sm font-semibold text-ink">
-            View Project →
+        <div className="mt-2 flex items-center justify-between gap-3 border-t border-border-light pt-[14px]">
+          <OwnerInlineLink owner={project.owner} commitmentLevel={project.commitmentLevel} />
+          {/* Visual affordance only — the stretched title link already covers this area. */}
+          <span className="inline-flex flex-none items-center gap-1.5 text-note font-semibold text-text-secondary transition-colors duration-200 group-hover:text-primary">
+            View project
+            <ArrowRight
+              className="h-4 w-4 transition-transform duration-200 ease-out-soft group-hover:translate-x-0.5"
+              aria-hidden
+            />
           </span>
         </div>
       </Card>
-    </Link>
+    </div>
   );
 }

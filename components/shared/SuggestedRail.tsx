@@ -41,7 +41,13 @@ export function SuggestedRail({ people, projects }: SuggestedRailProps) {
         />
       </Button>
 
-      <div className={cn('flex-col gap-4', open ? 'flex' : 'hidden', 'desktop:flex')}>
+      <div
+        className={cn(
+          'flex-col gap-4',
+          open ? 'flex duration-300 ease-out-soft animate-in fade-in slide-in-from-top-2' : 'hidden',
+          'desktop:flex',
+        )}
+      >
         <SuggestedForYouCard people={people} />
         <SuggestedProjectsCard projects={projects} />
       </div>
