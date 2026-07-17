@@ -5,6 +5,7 @@ import { AVAILABILITY_LABEL } from '@/lib/constants';
 import type { User } from '@/lib/mock/types';
 import { Avatar, Button, Card, Chip, H1, MonoLabel, Sub } from '@/components/ui';
 import { SignOutButton } from '@/components/layout/SignOutButton';
+import { ThemeToggle } from '@/components/layout/ThemeToggle';
 
 import { MessageButton } from './MessageButton';
 
@@ -20,26 +21,36 @@ export function ProfileHeaderCard({ user, isOwner }: ProfileHeaderCardProps) {
 
   return (
     <Card className="overflow-hidden p-0">
-      {/* Brand banner with the venn-mark motif echoed as oversized translucent circle outlines. */}
-      <div className="relative h-[116px] overflow-hidden bg-banner-gradient">
+      {/* Blueprint banner: the logo's adjacent-panes motif echoed as oversized translucent
+          rounded-square outlines, plus a faint drafting grid over the cobalt sweep. */}
+      <div
+        className="relative h-[116px] overflow-hidden bg-banner-gradient"
+        style={{
+          backgroundImage:
+            'linear-gradient(to right, rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(to bottom, rgba(255,255,255,.06) 1px, transparent 1px), linear-gradient(118deg,#101736 0%,#24357F 55%,#3E63DD 100%)',
+          backgroundSize: '28px 28px, 28px 28px, auto',
+        }}
+      >
         <div
           aria-hidden
-          className="absolute -top-14 right-6 h-40 w-40 rounded-full border-[10px] border-white/15"
+          className="absolute -top-16 right-8 h-40 w-40 rounded-[28px] border-[8px] border-white/15"
         />
         <div
           aria-hidden
-          className="absolute -top-6 right-24 h-28 w-28 rounded-full border-[10px] border-white/10"
+          className="absolute -top-4 right-28 h-24 w-24 rounded-[20px] border-[8px] border-white/10"
         />
         <div
           aria-hidden
-          className="absolute -bottom-20 -left-10 h-44 w-44 rounded-full bg-white/10 blur-2xl"
+          className="absolute -bottom-20 -left-10 h-44 w-44 rounded-full bg-primary-light/25 blur-2xl"
         />
       </div>
 
       <div className="px-6 pb-6">
         <div className="flex items-start justify-between gap-4">
-          {/* Avatar has no ring prop, so wrap it in a white-bordered ring per the design */}
-          <div className="-mt-[42px] rounded-full border-4 border-white shadow-[0_6px_18px_-6px_rgba(26,26,46,.3)]">
+          {/* Avatar has no ring prop, so wrap it in a surface-toned ring (theme-aware).
+              `relative` is load-bearing: the banner above is position:relative and would
+              otherwise paint over this in-flow, negative-margin overlapped box. */}
+          <div className="relative -mt-[42px] rounded-full border-4 border-surface shadow-[0_6px_18px_-6px_rgba(17,23,48,.3)]">
             <Avatar size={88} name={user.name} src={user.avatarUrl} />
           </div>
 
@@ -47,6 +58,7 @@ export function ProfileHeaderCard({ user, isOwner }: ProfileHeaderCardProps) {
             // Sign-out lives here too since the icon-only sidebar rail (768–1200px) and the
             // mobile bottom nav (<768px) have no persistent slot for it.
             <div className="mt-[52px] flex items-center gap-2">
+              <ThemeToggle className="border border-border" />
               <SignOutButton />
               <Link href="/profile/edit">
                 <Button>Edit Profile</Button>

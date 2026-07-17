@@ -22,7 +22,7 @@ export function EmptyState({ icon, heading, subtext, action, className }: EmptyS
     >
       <span
         aria-hidden
-        className="flex h-[46px] w-[46px] items-center justify-center rounded-full bg-gradient-to-br from-tag-bg to-accent-border/60 text-primary shadow-[inset_0_0_0_1px_rgba(239,98,108,.12)]"
+        className="flex h-[46px] w-[46px] items-center justify-center rounded-full bg-gradient-to-br from-tag-bg to-accent-border/60 text-primary ring-1 ring-inset ring-primary/10"
       >
         {icon}
       </span>

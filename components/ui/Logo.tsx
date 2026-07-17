@@ -10,16 +10,17 @@ export function Logo({ className, wordmarkClassName }: LogoProps) {
   return (
     <span
       className={cn(
-        'flex items-center gap-[11px] font-display text-[17px] font-bold tracking-[-0.01em] text-white',
+        'flex items-center gap-[10px] font-display text-[17px] font-bold tracking-[-0.01em] text-ink',
         className,
       )}
     >
-      {/* shadow-chip-primary approximates the design's mark glow (0 4px 14px -2px rgba(239,98,108,.7)) with a token */}
-      <span className="flex h-8 w-8 flex-none items-center justify-center rounded-sm bg-gradient-to-br from-primary-light to-primary shadow-chip-primary">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" aria-hidden>
-          {/* venn mark: two overlapping circles, coloured with literal #fff (intentional inline SVG stroke) */}
-          <circle cx="9.3" cy="12" r="4.6" stroke="#fff" strokeWidth="2.1" />
-          <circle cx="14.7" cy="12" r="4.6" stroke="#fff" strokeWidth="2.1" />
+      <span className="flex h-8 w-8 flex-none items-center justify-center rounded-tile bg-brand-gradient text-white shadow-chip-primary ring-1 ring-inset ring-white/20">
+        {/* "Pakkam" = beside/adjacent: two offset blueprint panes joining at the corner.
+            currentColor strokes so the mark inherits its context (white on the gradient tile)
+            and stays theme-aware anywhere it's reused. */}
+        <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden>
+          <rect x="3.1" y="3.1" width="9.2" height="9.2" rx="2.6" stroke="currentColor" strokeWidth="1.8" />
+          <rect x="7.7" y="7.7" width="9.2" height="9.2" rx="2.6" stroke="currentColor" strokeWidth="1.8" />
         </svg>
       </span>
       <span className={wordmarkClassName}>Pakkam Project</span>

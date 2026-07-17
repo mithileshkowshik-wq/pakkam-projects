@@ -2,13 +2,115 @@
 @tailwind components;
 @tailwind utilities;
 
+/* "Cobalt Blueprint" palette — every color token as CSS variables (space-separated RGB triplets,
+   consumed by tailwind.config.ts's `rgb(var(--color-x) / <alpha-value>)` pattern). A single
+   `.dark` class on <html> swaps the entire theme at once. */
+:root {
+  /* structural */
+  --color-bg: 244 246 251; /* cool paper */
+  --color-surface: 255 255 255;
+  --color-ink: 17 23 48; /* deep navy ink */
+  --color-ink-2: 43 51 82;
+  --color-border: 221 227 240;
+  --color-border-light: 232 236 246;
+  --color-text-secondary: 86 94 124;
+  --color-text-meta: 139 147 174;
+
+  /* brand */
+  --color-primary: 62 99 221; /* cobalt */
+  --color-primary-light: 123 150 244;
+  --color-primary-hover: 47 79 196;
+  --color-accent-border: 198 211 247;
+  --color-tag-bg: 233 238 253;
+  --color-tag-text: 59 91 208;
+
+  /* status */
+  --color-teal: 15 164 140; /* in progress */
+  --color-teal-bg: 216 243 236;
+  --color-teal-text: 12 114 100;
+  --color-idea-bg: 252 240 212; /* idea = amber spark */
+  --color-idea-text: 150 95 13;
+  --color-idea-dot: 232 163 32;
+  --color-launch-bg: 220 243 226; /* launch = green light */
+  --color-launch-text: 29 122 70;
+  --color-launch-dot: 47 174 104;
+
+  /* shell (theme-aware paper rail — token names kept from the old dark-rail era) */
+  --color-sidebar-nav: 86 94 124;
+  --color-sidebar-nav-active: 17 23 48;
+  --color-sidebar-muted: 139 147 174;
+  --color-sidebar-user-sub: 139 147 174;
+
+  /* ambient blueprint grid + glow (used by body below, not by Tailwind tokens) */
+  --grid-line: 62 99 221;
+  --grid-alpha: 0.06;
+  --glow: 62 99 221;
+  --glow-alpha: 0.08;
+  --sheen-tint: 240 244 255;
+}
+
+.dark {
+  --color-bg: 10 14 26; /* deep ink navy */
+  --color-surface: 19 26 46;
+  --color-ink: 233 237 250;
+  --color-ink-2: 195 202 226;
+  --color-border: 42 51 82;
+  --color-border-light: 29 37 64;
+  --color-text-secondary: 153 162 194;
+  --color-text-meta: 106 115 145;
+
+  --color-primary: 111 135 245; /* brightened cobalt */
+  --color-primary-light: 154 176 255;
+  --color-primary-hover: 147 168 255;
+  --color-accent-border: 53 66 110;
+  --color-tag-bg: 30 42 80;
+  --color-tag-text: 163 182 255;
+
+  --color-teal: 45 212 191;
+  --color-teal-bg: 16 48 44;
+  --color-teal-text: 110 231 212;
+  --color-idea-bg: 51 39 14;
+  --color-idea-text: 242 197 102;
+  --color-idea-dot: 245 184 61;
+  --color-launch-bg: 17 48 31;
+  --color-launch-text: 123 227 166;
+  --color-launch-dot: 70 197 127;
+
+  --color-sidebar-nav: 153 162 194;
+  --color-sidebar-nav-active: 233 237 250;
+  --color-sidebar-muted: 106 115 145;
+  --color-sidebar-user-sub: 106 115 145;
+
+  --grid-line: 122 146 255;
+  --grid-alpha: 0.07;
+  --glow: 91 119 240;
+  --glow-alpha: 0.1;
+  --sheen-tint: 26 34 60;
+}
+
 body {
   background-color: theme("colors.bg");
-  /* Ambient warmth: a coral wash bleeding in from the top-right and a faint teal
-     counter-glow bottom-left, fixed so scrolling content moves over the light. */
-  background-image:
-    radial-gradient(1100px 520px at 88% -12%, rgba(244, 134, 141, 0.16), transparent 62%),
-    radial-gradient(900px 480px at -8% 104%, rgba(43, 184, 166, 0.08), transparent 58%);
+  /* Blueprint ambience: a faint graph-paper grid over the whole page plus a soft cobalt glow
+     bleeding in from the top-right. Fixed so scrolling content moves over the drafting table. */
+  background-image: radial-gradient(
+      900px 480px at 82% -10%,
+      rgb(var(--glow) / var(--glow-alpha)),
+      transparent 60%
+    ),
+    linear-gradient(
+      to right,
+      rgb(var(--grid-line) / var(--grid-alpha)) 1px,
+      transparent 1px
+    ),
+    linear-gradient(
+      to bottom,
+      rgb(var(--grid-line) / var(--grid-alpha)) 1px,
+      transparent 1px
+    );
+  background-size:
+    auto,
+    32px 32px,
+    32px 32px;
   background-attachment: fixed;
   color: theme("colors.ink.DEFAULT");
   font-family: theme("fontFamily.sans");
@@ -17,5 +119,5 @@ body {
 }
 
 ::selection {
-  background: rgba(239, 98, 108, 0.22);
+  background: rgb(var(--color-primary) / 0.22);
 }

@@ -135,12 +135,7 @@ export function PostProjectForm({ domains, skills }: PostProjectFormProps) {
         />
       </section>
 
-      <SubmitBar
-        draftSavedAt={state.draftSavedAt}
-        onSaveDraft={form.markDraftSaved}
-        onPublish={handlePublish}
-        publishing={publishing}
-      />
+      <SubmitBar onPublish={handlePublish} publishing={publishing} />
     </div>
   );
 }

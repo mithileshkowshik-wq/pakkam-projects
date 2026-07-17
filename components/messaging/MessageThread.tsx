@@ -122,7 +122,7 @@ function MessageBubble({ message, isOwn }: { message: ThreadMessage; isOwn: bool
       <div
         className={cn(
           'max-w-[78%] whitespace-pre-wrap break-words rounded-lg px-[14px] py-2.5 text-[14.5px] leading-[1.45]',
-          isOwn ? 'bg-primary text-white' : 'bg-border-light text-ink',
+          isOwn ? 'bg-brand-gradient text-white' : 'bg-border-light text-ink',
           message.sending && 'opacity-70',
         )}
       >

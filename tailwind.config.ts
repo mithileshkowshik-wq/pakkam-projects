@@ -2,6 +2,7 @@ import type { Config } from "tailwindcss";
 import animate from "tailwindcss-animate";
 
 const config: Config = {
+  darkMode: "class",
   content: [
     "./pages/**/*.{js,ts,jsx,tsx,mdx}",
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
@@ -16,31 +17,62 @@ const config: Config = {
         desktop: "1200px",
       },
       colors: {
-        primary: { DEFAULT: "#EF626C", light: "#F4868D", hover: "#D64550" },
-        ink: { DEFAULT: "#22181C", 2: "#312F2F" },
-        bg: "#F6E8EA",
-        surface: "#FFFFFF",
-        border: { DEFAULT: "#E7D9DC", light: "#F0E4E6" },
-        "text-secondary": "#7A6E72",
-        "text-meta": "#A2969A",
-        "accent-border": "#F5C6C9",
-        tag: { bg: "#FBE0E2", text: "#EF626C" },
-        teal: { DEFAULT: "#2BB8A6", bg: "#DDF4F0", text: "#17756A" },
-        idea: { bg: "#FBE0E2", text: "#C23F49", dot: "#EF626C" },
-        launch: { bg: "#E9E4E6", text: "#22181C", dot: "#22181C" },
+        // "Cobalt Blueprint" palette — every token is CSS-variable-backed (values live in
+        // app/globals.css's :root/.dark blocks) so a single `.dark` class toggle on <html>
+        // re-resolves the entire theme at once. No plain hex tokens remain.
+        bg: "rgb(var(--color-bg) / <alpha-value>)",
+        surface: "rgb(var(--color-surface) / <alpha-value>)",
+        ink: {
+          DEFAULT: "rgb(var(--color-ink) / <alpha-value>)",
+          2: "rgb(var(--color-ink-2) / <alpha-value>)",
+        },
+        border: {
+          DEFAULT: "rgb(var(--color-border) / <alpha-value>)",
+          light: "rgb(var(--color-border-light) / <alpha-value>)",
+        },
+        "text-secondary": "rgb(var(--color-text-secondary) / <alpha-value>)",
+        "text-meta": "rgb(var(--color-text-meta) / <alpha-value>)",
+        primary: {
+          DEFAULT: "rgb(var(--color-primary) / <alpha-value>)",
+          light: "rgb(var(--color-primary-light) / <alpha-value>)",
+          hover: "rgb(var(--color-primary-hover) / <alpha-value>)",
+        },
+        "accent-border": "rgb(var(--color-accent-border) / <alpha-value>)",
+        tag: {
+          bg: "rgb(var(--color-tag-bg) / <alpha-value>)",
+          text: "rgb(var(--color-tag-text) / <alpha-value>)",
+        },
+        teal: {
+          DEFAULT: "rgb(var(--color-teal) / <alpha-value>)",
+          bg: "rgb(var(--color-teal-bg) / <alpha-value>)",
+          text: "rgb(var(--color-teal-text) / <alpha-value>)",
+        },
+        idea: {
+          bg: "rgb(var(--color-idea-bg) / <alpha-value>)",
+          text: "rgb(var(--color-idea-text) / <alpha-value>)",
+          dot: "rgb(var(--color-idea-dot) / <alpha-value>)",
+        },
+        launch: {
+          bg: "rgb(var(--color-launch-bg) / <alpha-value>)",
+          text: "rgb(var(--color-launch-text) / <alpha-value>)",
+          dot: "rgb(var(--color-launch-dot) / <alpha-value>)",
+        },
+        // The always-dark rail is gone — the shell is theme-aware paper now — but the token
+        // names survive (frozen call sites) and resolve to the structural neutrals per theme.
         sidebar: {
-          nav: "#A99DA1",
-          navActive: "#FFFFFF",
-          muted: "#D8CED1",
-          userSub: "#9C8F93",
+          nav: "rgb(var(--color-sidebar-nav) / <alpha-value>)",
+          navActive: "rgb(var(--color-sidebar-nav-active) / <alpha-value>)",
+          muted: "rgb(var(--color-sidebar-muted) / <alpha-value>)",
+          userSub: "rgb(var(--color-sidebar-user-sub) / <alpha-value>)",
         },
       },
+      // Crisper, more technical corner language than the old bubbly 10/16/22 scale.
       borderRadius: {
-        sm: "10px",
-        md: "16px",
-        lg: "22px",
+        sm: "8px",
+        md: "12px",
+        lg: "16px",
         pill: "999px",
-        tile: "9px",
+        tile: "8px",
       },
       fontFamily: {
         sans: ["var(--font-inter)", "sans-serif"],
@@ -57,32 +89,33 @@ const config: Config = {
         body: ["14.5px", { lineHeight: "1.55" }],
       },
       boxShadow: {
-        // Layered, softer resting card shadow (was a single flat blur).
-        card: "0 1px 2px rgba(34,24,28,.04), 0 6px 18px -6px rgba(34,24,28,.07)",
-        // Hover elevation for interactive cards — warm coral tint so lift reads on the pink page bg.
+        // Cool ink resting shadow; cobalt-tinted lift on hover so elevation reads on paper.
+        card: "0 1px 2px rgba(17,23,48,.04), 0 6px 18px -6px rgba(17,23,48,.07)",
         "card-hover":
-          "0 2px 4px rgba(34,24,28,.05), 0 18px 36px -14px rgba(239,98,108,.22)",
-        accent: "0 14px 33px -14px rgba(239,98,108,.35)",
-        "btn-primary": "0 10px 24px -8px rgba(239,98,108,.65)",
-        "chip-primary": "0 6px 16px -6px rgba(239,98,108,.7)",
+          "0 2px 4px rgba(17,23,48,.05), 0 18px 36px -14px rgba(62,99,221,.20)",
+        accent: "0 14px 33px -14px rgba(62,99,221,.28)",
+        "btn-primary": "0 10px 24px -8px rgba(62,99,221,.55)",
+        "chip-primary": "0 6px 16px -6px rgba(62,99,221,.55)",
         // Floating action button / hero CTA glow.
-        fab: "0 10px 24px -6px rgba(239,98,108,.55), 0 2px 6px rgba(239,98,108,.28)",
+        fab: "0 10px 24px -6px rgba(62,99,221,.45), 0 2px 6px rgba(62,99,221,.25)",
         // Popover/modal-weight elevation (auth card, etc.).
-        pop: "0 24px 60px -20px rgba(34,24,28,.28), 0 0 0 1px rgba(34,24,28,.03)",
+        pop: "0 24px 60px -20px rgba(17,23,48,.28), 0 0 0 1px rgba(17,23,48,.03)",
         // Upward shadow for the mobile bottom tab bar.
-        rail: "0 -10px 30px -14px rgba(34,24,28,.22)",
+        rail: "0 -10px 30px -14px rgba(17,23,48,.22)",
         shell:
-          "0 30px 70px -24px rgba(26,26,46,.42), 0 0 0 1px rgba(26,26,46,.05)",
-        focus: "0 0 0 4px rgba(239,98,108,.10)",
+          "0 30px 70px -24px rgba(17,23,48,.42), 0 0 0 1px rgba(17,23,48,.05)",
+        focus: "0 0 0 4px rgba(62,99,221,.12)",
       },
       backgroundImage: {
         // The single brand gradient — buttons, FAB, active accents all share this exact ramp.
-        "brand-gradient": "linear-gradient(120deg,#F4868D 0%,#EF626C 58%,#DE4E59 100%)",
-        // Profile banner: wider, softer three-stop sweep.
+        "brand-gradient":
+          "linear-gradient(135deg,#5B77F0 0%,#3E63DD 55%,#2F4FC4 100%)",
+        // Profile banner: deep ink → cobalt blueprint sweep; reads well in both themes.
         "banner-gradient":
-          "linear-gradient(115deg,#F7A9AE 0%,#EF626C 52%,#D64550 100%)",
-        // Barely-there warm sheen for accent cards (white → blush).
-        "card-sheen": "linear-gradient(165deg,#FFFFFF 55%,#FFF3F4 100%)",
+          "linear-gradient(118deg,#101736 0%,#24357F 55%,#3E63DD 100%)",
+        // Barely-there cool sheen for accent cards (surface → pale cobalt), theme-aware via vars.
+        "card-sheen":
+          "linear-gradient(165deg, rgb(var(--color-surface)) 50%, rgb(var(--sheen-tint)) 100%)",
       },
       transitionTimingFunction: {
         "out-soft": "cubic-bezier(.22,.61,.36,1)",

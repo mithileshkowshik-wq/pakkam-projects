@@ -14,8 +14,8 @@ const buttonVariants = cva(
         primary:
           'border-transparent bg-brand-gradient text-white shadow-btn-primary hover:-translate-y-px hover:shadow-fab',
         ghost: 'border-border bg-transparent text-ink hover:border-accent-border hover:bg-surface',
-        // dim colours (#EFE2E4 bg / #A5A1B8 text) have no exact tokens — approximated with launch-bg / text-meta
-        dim: 'border-transparent bg-launch-bg text-text-meta shadow-none',
+        // Muted/inactive action — quiet neutral fill, no elevation.
+        dim: 'border-transparent bg-border-light text-text-meta shadow-none',
       },
     },
     defaultVariants: { variant: 'default' },

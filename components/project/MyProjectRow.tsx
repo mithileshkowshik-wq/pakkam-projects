@@ -1,4 +1,4 @@
-import { ChevronRight, Eye, Inbox } from 'lucide-react';
+import { ChevronRight, Inbox } from 'lucide-react';
 import Link from 'next/link';
 
 import type { Project } from '@/lib/mock/types';
@@ -6,7 +6,7 @@ import { formatRelativeDate } from '@/lib/utils';
 import { Card, Chip, Meta, StatusBadge } from '@/components/ui';
 
 export interface MyProjectRowProps {
-  project: Pick<Project, 'id' | 'title' | 'pitch' | 'stage' | 'updatedAt' | 'viewingCount'>;
+  project: Pick<Project, 'id' | 'title' | 'pitch' | 'stage' | 'updatedAt'>;
   pendingRequestCount: number;
 }
 
@@ -28,10 +28,6 @@ export function MyProjectRow({ project, pendingRequestCount }: MyProjectRowProps
         </div>
 
         <div className="flex flex-none items-center gap-4 tablet:gap-5">
-          <span className="inline-flex items-center gap-1.5 text-meta text-text-meta">
-            <Eye className="h-3.5 w-3.5" aria-hidden />
-            {project.viewingCount ?? 0} viewing
-          </span>
           {pendingRequestCount > 0 && (
             <Chip variant="fill" size="sm" className="inline-flex items-center gap-1">
               <Inbox className="h-3 w-3" aria-hidden />

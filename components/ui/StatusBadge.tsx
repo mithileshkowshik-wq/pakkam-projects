@@ -19,7 +19,7 @@ export function StatusBadge({ stage, className }: StatusBadgeProps) {
   return (
     <span
       className={cn(
-        'inline-flex items-center gap-[7px] whitespace-nowrap rounded-pill px-3 py-[5px] text-label font-semibold ring-1 ring-inset ring-black/[.03]',
+        'inline-flex items-center gap-[7px] whitespace-nowrap rounded-pill px-3 py-[5px] text-label font-semibold ring-1 ring-inset ring-ink/5',
         style.badge,
         className,
       )}

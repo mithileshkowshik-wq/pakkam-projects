@@ -25,6 +25,19 @@ export const metadata: Metadata = {
   description: "Collaborative project discovery",
 };
 
+// Runs before first paint (inline, no external file) so the correct theme applies immediately —
+// without this, the page would flash light before a stored/system dark preference kicks in.
+// localStorage override wins if present, else falls back to prefers-color-scheme.
+const THEME_INIT_SCRIPT = `
+(function () {
+  try {
+    var stored = localStorage.getItem('theme');
+    var theme = stored || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    if (theme === 'dark') document.documentElement.classList.add('dark');
+  } catch (e) {}
+})();
+`;
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -34,7 +47,14 @@ export default function RootLayout({
     <html
       lang="en"
       className={`${inter.variable} ${spaceGrotesk.variable} ${jetBrainsMono.variable}`}
+      // The theme-init script (below) adds a `dark` class before hydration based on
+      // localStorage/system preference, which the server can't know about — an intentional,
+      // expected mismatch on this one attribute, not a real bug. This is the standard fix.
+      suppressHydrationWarning
     >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
+      </head>
       <body>{children}</body>
     </html>
   );

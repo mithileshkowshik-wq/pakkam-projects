@@ -9,6 +9,7 @@ import { useUnreadStore } from '@/lib/stores/useUnreadStore';
 import { Logo } from '@/components/ui';
 
 import { NavItem } from './NavItem';
+import { ThemeToggle } from './ThemeToggle';
 import { UserCard } from './UserCard';
 
 export interface SidebarProps {
@@ -25,13 +26,10 @@ export function Sidebar({ currentUser }: SidebarProps) {
 
   return (
     // <768px: hidden (replaced by BottomNav). 768–1200px: 64px icon-only rail. ≥1200px: full 248px.
-    <aside className="relative hidden flex-none flex-col gap-7 overflow-hidden bg-ink px-3 py-6 text-sidebar-nav tablet:flex tablet:w-16 desktop:w-[248px] desktop:px-5">
-      {/* Ambient coral glow bleeding down from behind the logo — gives the dark rail depth. */}
-      <div
-        aria-hidden
-        className="pointer-events-none absolute -top-20 left-1/2 h-44 w-44 -translate-x-1/2 rounded-full bg-primary/25 blur-3xl"
-      />
-
+    // Design decision: the old always-dark rail is gone. The shell is now a theme-aware paper
+    // rail — hairline border, cobalt active states — so the blueprint identity flips wholesale
+    // with the theme instead of anchoring a permanent dark strip.
+    <aside className="relative hidden flex-none flex-col gap-7 border-r border-border-light bg-surface px-3 py-6 text-sidebar-nav tablet:flex tablet:w-16 desktop:w-[248px] desktop:px-5">
       <Link
         href="/home"
         className="relative flex justify-center desktop:justify-start"
@@ -41,7 +39,7 @@ export function Sidebar({ currentUser }: SidebarProps) {
       </Link>
 
       <div className="relative flex flex-col gap-2">
-        <p className="hidden px-[13px] font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-white/25 desktop:block">
+        <p className="hidden px-[13px] font-mono text-[10px] font-medium uppercase tracking-[0.16em] text-text-meta desktop:block">
           Menu
         </p>
         <nav className="flex flex-col gap-1">
@@ -58,12 +56,12 @@ export function Sidebar({ currentUser }: SidebarProps) {
         </nav>
       </div>
 
-      {/* Hero CTA: shared brand gradient + inner highlight ring so it reads as the one "lit" element
-          on the dark rail. <desktop: shrinks to an icon-only square, keeping the gradient identity. */}
+      {/* Hero CTA: shared brand gradient + inner highlight ring — the one "lit" element on the
+          paper rail. <desktop: shrinks to an icon-only square, keeping the gradient identity. */}
       <Link
         href="/projects/new"
         aria-label="Post a Project"
-        className="relative flex items-center justify-center gap-2 rounded-[13px] bg-brand-gradient px-0 py-3 text-sm font-semibold text-white shadow-fab ring-1 ring-inset ring-white/25 transition-all duration-200 ease-out-soft hover:-translate-y-px hover:brightness-105 active:translate-y-0 desktop:px-4"
+        className="relative flex items-center justify-center gap-2 rounded-md bg-brand-gradient px-0 py-3 text-sm font-semibold text-white shadow-fab ring-1 ring-inset ring-white/25 transition-all duration-200 ease-out-soft hover:-translate-y-px hover:brightness-105 active:translate-y-0 desktop:px-4"
       >
         <Plus className="h-[18px] w-[18px] flex-none" aria-hidden />
         <span className="hidden desktop:inline">Post a Project</span>
@@ -71,6 +69,7 @@ export function Sidebar({ currentUser }: SidebarProps) {
 
       <div className="flex-1" />
 
+      <ThemeToggle className="self-center desktop:self-start" />
       <UserCard user={currentUser} />
     </aside>
   );

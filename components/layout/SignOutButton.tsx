@@ -56,7 +56,7 @@ export function SignOutIconButton({ className, icon: Icon }: SignOutIconButtonPr
       onClick={handleClick}
       aria-label="Sign out"
       className={cn(
-        'flex-none rounded-md p-1.5 text-sidebar-userSub transition-colors hover:bg-white/[.06] hover:text-white',
+        'flex-none rounded-tile p-1.5 text-sidebar-userSub transition-colors hover:bg-bg hover:text-ink',
         className,
       )}
     >

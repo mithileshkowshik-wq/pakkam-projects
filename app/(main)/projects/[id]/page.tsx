@@ -68,13 +68,15 @@ export default async function ProjectDetailPage({
               </Chip>
             )}
             <StatusBadge stage={project.stage} />
+            {project.isOpenToCollabs && (
+              <Chip variant="tag" size="sm">
+                Open to collaborators
+              </Chip>
+            )}
           </div>
 
           <H1 className="mb-2 mt-4 text-[32px]">{project.title}</H1>
-          <Meta>
-            Updated {formatRelativeDate(project.updatedAt)} · {project.viewingCount ?? 0} people
-            viewing
-          </Meta>
+          <Meta>Updated {formatRelativeDate(project.updatedAt)}</Meta>
 
           <SectionDivider />
           <SectionHeading>About this project</SectionHeading>

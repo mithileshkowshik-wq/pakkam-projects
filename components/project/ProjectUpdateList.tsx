@@ -1,9 +1,10 @@
 'use client';
 
+import { Megaphone } from 'lucide-react';
 import { useState } from 'react';
 
 import type { ProjectUpdate } from '@/lib/mock/types';
-import { MonoLabel, Sub } from '@/components/ui';
+import { EmptyState, MonoLabel, Sub } from '@/components/ui';
 
 export interface ProjectUpdateListProps {
   updates: ProjectUpdate[];
@@ -19,6 +20,16 @@ export function ProjectUpdateList({ updates }: ProjectUpdateListProps) {
   const [expanded, setExpanded] = useState(false);
   const canCollapse = updates.length > INITIAL_VISIBLE;
   const visible = expanded || !canCollapse ? updates : updates.slice(0, INITIAL_VISIBLE);
+
+  if (updates.length === 0) {
+    return (
+      <EmptyState
+        icon={<Megaphone className="h-5 w-5" aria-hidden />}
+        heading="No updates yet"
+        subtext="The owner hasn't posted an update on this project yet."
+      />
+    );
+  }
 
   return (
     // Timeline treatment: a hairline rail with coral dots instead of a stack of boxed cards.

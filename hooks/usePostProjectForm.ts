@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useReducer } from 'react';
+import { useReducer } from 'react';
 
 import type { CommitmentLevel, ProjectStage } from '@/lib/mock/types';
 
@@ -27,7 +27,6 @@ export interface PostProjectState {
   githubLink: string;
   openToCollaborators: boolean;
   whoCanApply: WhoCanApply;
-  draftSavedAt: Date | null;
 }
 
 export const MAX_ROLES = 5;
@@ -50,7 +49,6 @@ const initialState: PostProjectState = {
   githubLink: '',
   openToCollaborators: true,
   whoCanApply: 'ANYONE',
-  draftSavedAt: null,
 };
 
 type Action =
@@ -58,8 +56,7 @@ type Action =
   | { type: 'ADD_ROLE' }
   | { type: 'REMOVE_ROLE'; id: string }
   | { type: 'UPDATE_ROLE'; id: string; patch: Partial<Omit<RoleDraft, 'id'>> }
-  | { type: 'TOGGLE_IN_ARRAY'; key: 'collaborationStyle' | 'tools'; value: string }
-  | { type: 'MARK_DRAFT_SAVED' };
+  | { type: 'TOGGLE_IN_ARRAY'; key: 'collaborationStyle' | 'tools'; value: string };
 
 function toggle(list: string[], value: string): string[] {
   return list.includes(value) ? list.filter((v) => v !== value) : [...list, value];
@@ -87,8 +84,6 @@ function reducer(state: PostProjectState, action: Action): PostProjectState {
       };
     case 'TOGGLE_IN_ARRAY':
       return { ...state, [action.key]: toggle(state[action.key], action.value) };
-    case 'MARK_DRAFT_SAVED':
-      return { ...state, draftSavedAt: new Date() };
     default:
       return state;
   }
@@ -99,32 +94,6 @@ export function usePostProjectForm() {
 
   const setField = <K extends keyof PostProjectState>(key: K, value: PostProjectState[K]) =>
     dispatch({ type: 'SET_FIELD', key, value });
-
-  const markDraftSaved = () => dispatch({ type: 'MARK_DRAFT_SAVED' });
-
-  // Debounced autosave: ~1.5s after the last edit, stamp draftSavedAt. The dependency list
-  // covers every user-editable field so any change restarts the timer. draftSavedAt itself is
-  // deliberately excluded to avoid a self-retriggering loop.
-  useEffect(() => {
-    const timer = setTimeout(markDraftSaved, 1500);
-    return () => clearTimeout(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    state.title,
-    state.pitch,
-    state.categoryDomainId,
-    state.stage,
-    state.description,
-    state.roles,
-    state.skillsNeeded,
-    state.commitment,
-    state.collaborationStyle,
-    state.tools,
-    state.demoLink,
-    state.githubLink,
-    state.openToCollaborators,
-    state.whoCanApply,
-  ]);
 
   return {
     state,
@@ -146,6 +115,5 @@ export function usePostProjectForm() {
     setGithubLink: (v: string) => setField('githubLink', v),
     setOpenToCollaborators: (v: boolean) => setField('openToCollaborators', v),
     setWhoCanApply: (v: WhoCanApply) => setField('whoCanApply', v),
-    markDraftSaved,
   };
 }

@@ -16,11 +16,11 @@ export interface NavItemProps {
 }
 
 // <desktop the rail is icon-only: center the icon, drop the label + horizontal padding.
-// `relative` anchors the active-state coral indicator bar pinned to the item's left edge.
+// `relative` anchors the active-state cobalt indicator bar pinned to the item's left edge.
 const BASE =
-  'relative flex items-center justify-center gap-3 rounded-[11px] px-0 py-[11px] text-[14.5px] font-medium transition-colors duration-200 desktop:justify-start desktop:px-[13px]';
-const ACTIVE = 'bg-white/[.07] text-white shadow-[inset_0_0_0_1px_rgba(255,255,255,.07)]';
-const INACTIVE = 'text-sidebar-nav hover:bg-white/[.04] hover:text-white';
+  'relative flex items-center justify-center gap-3 rounded-tile px-0 py-[11px] text-[14.5px] font-medium transition-colors duration-200 desktop:justify-start desktop:px-[13px]';
+const ACTIVE = 'bg-tag-bg text-tag-text';
+const INACTIVE = 'text-sidebar-nav hover:bg-bg hover:text-ink';
 
 export function NavItem({ href, icon: Icon, label, active, disabled, badge }: NavItemProps) {
   const content = (
@@ -28,11 +28,11 @@ export function NavItem({ href, icon: Icon, label, active, disabled, badge }: Na
       {active && (
         <span
           aria-hidden
-          className="absolute -left-px top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-brand-gradient shadow-chip-primary"
+          className="absolute -left-px top-1/2 h-5 w-[3px] -translate-y-1/2 rounded-full bg-primary shadow-chip-primary"
         />
       )}
       <span className="relative flex-none">
-        <Icon className={cn('h-[18px] w-[18px]', active && 'text-primary-light')} aria-hidden />
+        <Icon className={cn('h-[18px] w-[18px]', active && 'text-primary')} aria-hidden />
         {!!badge && badge > 0 && (
           <span
             aria-hidden

@@ -9,7 +9,15 @@ import { OwnerInlineLink } from './OwnerInlineLink';
 export interface ProjectCardProps {
   project: Pick<
     Project,
-    'id' | 'title' | 'pitch' | 'stage' | 'domains' | 'skills' | 'commitmentLevel' | 'owner'
+    | 'id'
+    | 'title'
+    | 'pitch'
+    | 'stage'
+    | 'domains'
+    | 'skills'
+    | 'commitmentLevel'
+    | 'owner'
+    | 'isOpenToCollabs'
   >;
   /** Accent Card styling — used for the first/featured feed card. */
   highlighted?: boolean;
@@ -56,7 +64,14 @@ export function ProjectCard({ project, highlighted, compact }: ProjectCardProps)
           <H3 className="transition-colors duration-200 group-hover:text-primary-hover">
             {project.title}
           </H3>
-          <StatusBadge stage={project.stage} className="mt-auto self-start" />
+          <div className="mt-auto flex flex-wrap items-center gap-1.5">
+            <StatusBadge stage={project.stage} />
+            {project.isOpenToCollabs && (
+              <Chip variant="tag" size="sm">
+                Open to collaborators
+              </Chip>
+            )}
+          </div>
         </Card>
       </Link>
     );
@@ -73,8 +88,10 @@ export function ProjectCard({ project, highlighted, compact }: ProjectCardProps)
         accent={highlighted}
         className="flex flex-col gap-3 transition-all duration-200 ease-out-soft group-hover:-translate-y-0.5 group-hover:border-accent-border group-hover:shadow-card-hover"
       >
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex min-w-0 items-center gap-3">
+        {/* flex-wrap + a generous basis on the title block: on narrow screens the badge cluster
+            wraps below the title instead of crushing it to zero width. */}
+        <div className="flex flex-wrap items-start justify-between gap-3">
+          <div className="flex min-w-0 flex-1 basis-[220px] items-center gap-3">
             <DomainTile emoji={domain?.emoji} />
             <div className="min-w-0">
               {domain && (
@@ -92,7 +109,14 @@ export function ProjectCard({ project, highlighted, compact }: ProjectCardProps)
               </H2>
             </div>
           </div>
-          <StatusBadge stage={project.stage} className="flex-none" />
+          <div className="flex flex-none flex-wrap items-center justify-end gap-1.5">
+            <StatusBadge stage={project.stage} />
+            {project.isOpenToCollabs && (
+              <Chip variant="tag" size="sm">
+                Open to collaborators
+              </Chip>
+            )}
+          </div>
         </div>
 
         <Sub className="line-clamp-2">{project.pitch}</Sub>

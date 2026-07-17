@@ -7,8 +7,8 @@ export interface AvatarProps {
   className?: string;
 }
 
-// arbitrary-value inset ring per the design (.av box-shadow: inset 0 0 0 1px rgba(239,98,108,.14))
-const INSET_RING = 'shadow-[inset_0_0_0_1px_rgba(239,98,108,.14)]';
+// Hairline cobalt keyline — token-backed so it re-tints per theme.
+const INSET_RING = 'ring-1 ring-inset ring-primary/15';
 
 export function Avatar({ name, src, size = 40, className }: AvatarProps) {
   const alt = `${name} profile photo`;
