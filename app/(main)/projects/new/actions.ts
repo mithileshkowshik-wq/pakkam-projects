@@ -2,6 +2,7 @@
 
 import { getCurrentUser } from '@/lib/data';
 import { prisma } from '@/lib/data/prisma';
+import { sanitizeDescription } from '@/lib/sanitizeHtml';
 import { createProjectSchema, type CreateProjectInput } from '@/lib/validations/project';
 
 export interface CreateProjectResult {
@@ -31,9 +32,9 @@ export async function createProject(input: CreateProjectInput): Promise<CreatePr
         ownerId: currentUser.id,
         title: data.title,
         pitch: data.pitch,
-        // Single Text column — see prisma/schema.prisma's Project doc comment. The form's
-        // description field is already one string, so no paragraph-join is needed here.
-        description: data.description,
+        // Sanitized here (not just relying on the Tiptap UI) so a client bypassing the editor
+        // and posting raw HTML straight at this action can't get anything past the allowlist.
+        description: sanitizeDescription(data.description),
         stage: data.stage,
         commitmentLevel: data.commitment,
         collaborationStyle: data.collaborationStyle,

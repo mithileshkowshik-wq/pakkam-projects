@@ -1,4 +1,5 @@
 import { MapPin } from 'lucide-react';
+import Link from 'next/link';
 
 import { AVAILABILITY_LABEL } from '@/lib/constants';
 import type { User } from '@/lib/mock/types';
@@ -34,8 +35,9 @@ export function ProfileHeaderCard({ user, isOwner }: ProfileHeaderCardProps) {
             // mobile bottom nav (<768px) have no persistent slot for it.
             <div className="mt-[52px] flex items-center gap-2">
               <SignOutButton />
-              {/* Visual affordance only: there is no edit-profile screen in scope this pass. */}
-              <Button disabled>Edit Profile</Button>
+              <Link href="/profile/edit">
+                <Button>Edit Profile</Button>
+              </Link>
             </div>
           ) : (
             <MessageButton userId={user.id} className="mt-[52px]" />

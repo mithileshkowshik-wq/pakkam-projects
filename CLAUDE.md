@@ -18,7 +18,7 @@ npm run build       # production build; also runs type-checking and linting
 npm run lint        # next lint
 npx tsc --noEmit    # type-check only
 npx prisma generate # regenerate the Prisma client after editing prisma/schema.prisma
-npx prisma db seed  # reseed from lib/mock/* (destructive — wipes and recreates all rows, see prisma/seed.ts)
+SEED_CONFIRM=yes-seed-demo-data npx prisma db seed  # upsert demo content from lib/mock/* (safe to re-run — see prisma/seed.ts)
 ```
 
 No test runner is configured. Verify changes by running the dev server and driving the actual flow in a browser (or via Playwright ad hoc) — there's no test suite to lean on.

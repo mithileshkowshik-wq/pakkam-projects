@@ -1,14 +1,17 @@
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
-import { Chip, H1, H2, Meta, SectionDivider, StatusBadge, Sub } from '@/components/ui';
+import { Chip, H1, H2, Meta, SectionDivider, StatusBadge } from '@/components/ui';
 import { CollaborationStyleRow } from '@/components/project/CollaborationStyleRow';
+import { IncomingRequestsCard } from '@/components/project/IncomingRequestsCard';
 import { OwnerCard } from '@/components/project/OwnerCard';
 import { ProjectUpdateList } from '@/components/project/ProjectUpdateList';
 import { RoleListItem } from '@/components/project/RoleListItem';
 import { RequestToCollaborateCard } from '@/components/project/RequestToCollaborateCard';
-import { getProjectById, getUserByUsername } from '@/lib/data';
+import { getCurrentUser, getProjectById, getUserByUsername } from '@/lib/data';
 import { formatRelativeDate } from '@/lib/utils';
+
+import { getMyCollabRequestStatus, getPendingCollabRequests } from './actions';
 
 export default async function ProjectDetailPage({
   params,
@@ -21,6 +24,9 @@ export default async function ProjectDetailPage({
   // OwnerCard needs the owner's `skills`, which Project.owner omits — look up the full User.
   const ownerRecord = await getUserByUsername(project.owner.username);
   const owner = ownerRecord ?? { ...project.owner, skills: [] };
+
+  const currentUser = await getCurrentUser();
+  const isOwner = currentUser?.id === project.ownerId;
 
   const category = project.domains[0];
 
@@ -56,11 +62,12 @@ export default async function ProjectDetailPage({
 
           <SectionDivider />
           <H2>About this project</H2>
-          {project.description.map((paragraph, index) => (
-            <Sub key={index} className="mt-3">
-              {paragraph}
-            </Sub>
-          ))}
+          {/* Sanitized once at the write boundary (lib/sanitizeHtml.ts) — safe to render
+              directly here, not re-sanitized on every read. */}
+          <div
+            className="mt-3 text-[14.5px] leading-[1.55] text-text-secondary [&_li]:ml-5 [&_p+p]:mt-3 [&_strong]:font-semibold [&_ul]:mt-3 [&_ul]:list-disc"
+            dangerouslySetInnerHTML={{ __html: project.description }}
+          />
 
           <SectionDivider />
           <H2>What we&apos;re looking for</H2>
@@ -104,7 +111,14 @@ export default async function ProjectDetailPage({
         {/* Right column */}
         <aside className="flex w-full flex-col gap-4 tablet:sticky tablet:top-6 tablet:w-[340px] tablet:flex-none">
           <OwnerCard owner={owner} />
-          <RequestToCollaborateCard projectId={project.id} />
+          {isOwner ? (
+            <IncomingRequestsCard requests={await getPendingCollabRequests(project.id)} />
+          ) : currentUser ? (
+            <RequestToCollaborateCard
+              projectId={project.id}
+              initialStatus={await getMyCollabRequestStatus(project.id, currentUser.id)}
+            />
+          ) : null}
         </aside>
       </div>
     </div>

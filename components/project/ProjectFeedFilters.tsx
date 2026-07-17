@@ -1,6 +1,7 @@
 'use client';
 
-import { ChevronDown, SearchX } from 'lucide-react';
+import { ChevronDown, Rocket, SearchX } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useMemo, useState } from 'react';
 
 import { ProjectCard } from '@/components/project/ProjectCard';
@@ -35,6 +36,7 @@ export interface ProjectFeedFiltersProps {
  * in-memory array work, so no debounce is needed.
  */
 export function ProjectFeedFilters({ projects, domains }: ProjectFeedFiltersProps) {
+  const router = useRouter();
   const [activeDomain, setActiveDomain] = useState<string>(ALL);
   const [activeStage, setActiveStage] = useState<ProjectStage | typeof ALL>(ALL);
   const [activeCommitment, setActiveCommitment] = useState<CommitmentLevel | typeof ALL>(ALL);
@@ -128,6 +130,15 @@ export function ProjectFeedFilters({ projects, domains }: ProjectFeedFiltersProp
             <ProjectCard key={p.id} project={p} highlighted={i === 0 && noFiltersActive} />
           ))}
         </div>
+      ) : noFiltersActive && projects.length === 0 ? (
+        // Distinct from the "no filtered results" case below: the platform genuinely has zero
+        // projects yet, so "clear filters" (which the user never touched) would be misleading.
+        <EmptyState
+          icon={<Rocket className="h-5 w-5" aria-hidden />}
+          heading="No projects yet"
+          subtext="Be the first to post one and find collaborators."
+          action={{ label: 'Post a Project', onClick: () => router.push('/projects/new') }}
+        />
       ) : (
         <EmptyState
           icon={<SearchX className="h-5 w-5" aria-hidden />}

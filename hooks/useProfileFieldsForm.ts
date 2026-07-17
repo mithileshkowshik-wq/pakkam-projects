@@ -4,7 +4,8 @@ import { useReducer } from 'react';
 
 import type { Availability } from '@/lib/data';
 
-export interface OnboardingState {
+export interface ProfileFieldsState {
+  headline: string; // only rendered/edited via ProfileFieldsFieldset's includeHeadline
   bio: string; // soft limit 100
   availabilityLevel: Availability;
   location: string;
@@ -18,11 +19,11 @@ export const MAX_DOMAINS = 8;
 
 type Action = {
   type: 'SET_FIELD';
-  key: keyof OnboardingState;
-  value: OnboardingState[keyof OnboardingState];
+  key: keyof ProfileFieldsState;
+  value: ProfileFieldsState[keyof ProfileFieldsState];
 };
 
-function reducer(state: OnboardingState, action: Action): OnboardingState {
+function reducer(state: ProfileFieldsState, action: Action): ProfileFieldsState {
   switch (action.type) {
     case 'SET_FIELD':
       return { ...state, [action.key]: action.value };
@@ -31,14 +32,15 @@ function reducer(state: OnboardingState, action: Action): OnboardingState {
   }
 }
 
-export function useOnboardingForm(initial: OnboardingState) {
+export function useProfileFieldsForm(initial: ProfileFieldsState) {
   const [state, dispatch] = useReducer(reducer, initial);
 
-  const setField = <K extends keyof OnboardingState>(key: K, value: OnboardingState[K]) =>
+  const setField = <K extends keyof ProfileFieldsState>(key: K, value: ProfileFieldsState[K]) =>
     dispatch({ type: 'SET_FIELD', key, value });
 
   return {
     state,
+    setHeadline: (v: string) => setField('headline', v),
     setBio: (v: string) => setField('bio', v),
     setAvailabilityLevel: (v: Availability) => setField('availabilityLevel', v),
     setLocation: (v: string) => setField('location', v),

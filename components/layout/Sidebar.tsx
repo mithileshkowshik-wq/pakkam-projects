@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import type { User } from '@/lib/mock/types';
+import { useUnreadStore } from '@/lib/stores/useUnreadStore';
 import { Logo } from '@/components/ui';
 
 import { NavItem } from './NavItem';
@@ -16,6 +17,7 @@ export interface SidebarProps {
 
 export function Sidebar({ currentUser }: SidebarProps) {
   const pathname = usePathname();
+  const unreadCount = useUnreadStore((s) => s.unreadConversationIds.size);
   const profileHref = `/profile/${currentUser.username}`;
   const isHome = pathname === '/home';
   const isProfile = pathname.startsWith('/profile');
@@ -36,6 +38,7 @@ export function Sidebar({ currentUser }: SidebarProps) {
           icon={MessageSquare}
           label="Messages"
           active={pathname.startsWith('/messages')}
+          badge={unreadCount}
         />
         <NavItem href={profileHref} icon={UserIcon} label="Profile" active={isProfile} />
       </nav>

@@ -1,9 +1,16 @@
 import 'server-only';
 
+import { rankByScore, scorePersonMatch, scoreProjectMatch } from '@/lib/matching';
 import type { Domain, Project, Skill, User } from '@/lib/mock/types';
 import { createClient } from '@/lib/supabase/server';
 
 import { prisma } from './prisma';
+
+// Candidate pool size for matching (item 3, Phase 3): bounded rather than scanning every user/
+// project, scored in JS. Justified by scale — this is a pre-launch app with a small user base;
+// revisit with a raw-SQL scoring query only if the candidate pool needs to be the entire table
+// (thousands of rows), which in-JS scoring over a bounded, already-joined fetch doesn't need to be.
+const CANDIDATE_POOL_SIZE = 50;
 
 export * from '@/lib/mock/types';
 
@@ -103,15 +110,16 @@ function mapUser(row: UserRow): User {
   };
 }
 
-// See prisma/schema.prisma's Project doc comment: description is a single Text
-// column, paragraphs joined with "\n\n" on write, split on "\n\n" on render here.
+// See prisma/schema.prisma's Project doc comment: description is sanitized Tiptap HTML, stored
+// and rendered as a single string — sanitization happens once at the write boundary (see
+// lib/sanitizeHtml.ts and app/(main)/projects/new/actions.ts), not on every render here.
 function mapProject(row: ProjectRow): Project {
   return {
     id: row.id,
     ownerId: row.ownerId,
     title: row.title,
     pitch: row.pitch,
-    description: row.description.split('\n\n'),
+    description: row.description,
     stage: row.stage,
     commitmentLevel: row.commitmentLevel,
     collaborationStyle: row.collaborationStyle,
@@ -155,26 +163,35 @@ export async function getProjectsByOwner(ownerId: string): Promise<Project[]> {
   return rows.map(mapProject);
 }
 
-/** Trivial "slice the list" suggestion logic — not the weighted scoring algorithm
- * from the original architecture spec, which is out of scope this phase. */
-export async function getSuggestedPeople(currentUserId: string, limit = 3): Promise<User[]> {
+/** Weighted match (skill/domain overlap + availability), scored in JS over a bounded,
+ * most-recent-first candidate pool — see CANDIDATE_POOL_SIZE. */
+export async function getSuggestedPeople(currentUser: User, limit = 3): Promise<User[]> {
   const rows = await prisma.user.findMany({
-    where: { id: { not: currentUserId } },
+    where: { id: { not: currentUser.id }, openToCollaborate: true },
     select: USER_SELECT,
-    take: limit,
+    take: CANDIDATE_POOL_SIZE,
     orderBy: { createdAt: 'desc' },
   });
-  return rows.map(mapUser);
+  const candidates = rows.map(mapUser);
+  return rankByScore(candidates, (c) => scorePersonMatch(currentUser, c), limit);
 }
 
-export async function getSuggestedProjects(currentUserId: string, limit = 2): Promise<Project[]> {
+/** Same weighted-match approach as getSuggestedPeople, plus excludes projects the current user
+ * already has a pending or accepted collaboration request for (new in Phase 3 — a project you've
+ * already asked to join, or joined, isn't a "suggestion" anymore). */
+export async function getSuggestedProjects(currentUser: User, limit = 2): Promise<Project[]> {
   const rows = await prisma.project.findMany({
-    where: { isPublic: true, ownerId: { not: currentUserId } },
+    where: {
+      isPublic: true,
+      ownerId: { not: currentUser.id },
+      collabRequests: { none: { requesterId: currentUser.id, status: { in: ['PENDING', 'ACCEPTED'] } } },
+    },
     include: PROJECT_INCLUDE,
-    take: limit,
+    take: CANDIDATE_POOL_SIZE,
     orderBy: { updatedAt: 'desc' },
   });
-  return rows.map(mapProject);
+  const candidates = rows.map(mapProject);
+  return rankByScore(candidates, (p) => scoreProjectMatch(currentUser, p), limit);
 }
 
 /** Replaces the raw PROJECTS array import Home's feed used to read directly from

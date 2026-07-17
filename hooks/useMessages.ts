@@ -2,7 +2,8 @@
 
 import { useCallback, useEffect, useState } from 'react';
 
-import { sendMessage as sendMessageAction, type ThreadMessage } from '@/app/(main)/messages/actions';
+import { markConversationRead, sendMessage as sendMessageAction, type ThreadMessage } from '@/app/(main)/messages/actions';
+import { useUnreadStore } from '@/lib/stores/useUnreadStore';
 import { createClient } from '@/lib/supabase/client';
 
 interface UseMessagesArgs {
@@ -61,6 +62,15 @@ export function useMessages({ conversationId, currentUserId, initialMessages }: 
               { id: row.id, content: row.content, senderId: row.senderId, createdAt: row.createdAt },
             ];
           });
+
+          // Pre-existing gap this closes: markConversationRead used to run only once on mount,
+          // so an inbound message arriving while the thread was already open never re-bumped
+          // lastReadAt — getConversations() would then wrongly show it unread later. Also keeps
+          // the unread nav badge (Phase 3 item 7) from lighting up for a thread already in view.
+          if (row.senderId !== currentUserId) {
+            useUnreadStore.getState().markRead(conversationId);
+            void markConversationRead(conversationId);
+          }
         })
         .subscribe();
     };

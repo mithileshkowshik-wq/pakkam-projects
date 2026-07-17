@@ -6,6 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { markConversationRead, type ThreadMessage } from '@/app/(main)/messages/actions';
 import { useMessages } from '@/hooks/useMessages';
+import { useUnreadStore } from '@/lib/stores/useUnreadStore';
 import { cn } from '@/lib/utils';
 import { MESSAGE_MAX_LENGTH } from '@/lib/validations/message';
 import { Avatar, Button, Textarea } from '@/components/ui';
@@ -35,6 +36,9 @@ export function MessageThread({
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    // Opening a thread directly (not via a live broadcast while already viewing it) must also
+    // clear the nav badge's client-side store — markConversationRead alone only updates the DB.
+    useUnreadStore.getState().markRead(conversationId);
     void markConversationRead(conversationId);
   }, [conversationId]);
 

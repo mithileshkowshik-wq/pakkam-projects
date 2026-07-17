@@ -106,8 +106,9 @@ model UserDomain {
   @@id([userId, domainId])
 }
 
-/// description is stored as a single Text column. Convention: paragraphs are
-/// joined with "\n\n" on write and split on "\n\n" on render (see lib/data).
+/// description is stored as a single Text column: sanitized HTML from the Tiptap editor
+/// (Bold/Italic/BulletList only — see components/project/post-form/DescriptionSection.tsx and
+/// lib/sanitizeHtml.ts). Rendered directly, no paragraph-array split (see lib/data).
 model Project {
   id                 String          @id @default(cuid())
   ownerId            String

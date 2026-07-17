@@ -10,8 +10,8 @@ export default async function HomePage() {
   const [projects, domains, suggestedPeople, suggestedProjects] = await Promise.all([
     getFeedProjects(),
     getDomains(),
-    getSuggestedPeople(currentUser!.id, 3),
-    getSuggestedProjects(currentUser!.id, 2),
+    getSuggestedPeople(currentUser!, 3),
+    getSuggestedProjects(currentUser!, 2),
   ]);
 
   return (

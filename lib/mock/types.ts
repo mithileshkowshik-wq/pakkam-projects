@@ -28,7 +28,7 @@ export interface Project {
   ownerId: string;
   title: string;
   pitch: string;
-  description: string[]; // paragraphs, deliberately not one HTML blob (mock-only shape)
+  description: string; // sanitized HTML (Tiptap: p/strong/em/ul/li only) — see lib/sanitizeHtml.ts
   stage: ProjectStage;
   commitmentLevel: CommitmentLevel;
   collaborationStyle: string[];

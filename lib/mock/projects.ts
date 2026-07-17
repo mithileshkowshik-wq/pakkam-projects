@@ -54,10 +54,8 @@ export const PROJECTS: Project[] = [
     title: "Co-op puzzle game prototype",
     pitch:
       "A cozy two-player puzzler about rerouting light through a broken observatory. Prototype is playable, tuning the middle levels now.",
-    description: [
-      "A cozy two-player puzzler about rerouting beams of light through a broken observatory to wake up its sleeping constellations. Each level is a small self-contained machine; co-op comes from one player steering mirrors while the other controls time.",
-      "The prototype is playable end-to-end with 12 levels. We're tuning difficulty in the middle third and building out the soundtrack and art pass before a small public demo.",
-    ],
+    description:
+      "<p>A cozy two-player puzzler about rerouting beams of light through a broken observatory to wake up its sleeping constellations. Each level is a small self-contained machine; co-op comes from one player steering mirrors while the other controls time.</p><p>The prototype is playable end-to-end with 12 levels. We're tuning difficulty in the middle third and building out the soundtrack and art pass before a small public demo.</p>",
     stage: "IN_PROGRESS",
     commitmentLevel: "PART_TIME",
     collaborationStyle: ["Remote", "Async-friendly"],
@@ -118,10 +116,8 @@ export const PROJECTS: Project[] = [
     title: "A serialized sci-fi newsletter",
     pitch:
       "Looking for a co-writer and an illustrator to launch a bi-weekly short-fiction newsletter set in a shared solarpunk universe.",
-    description: [
-      "A low-pressure fiction project built around compact episodes, recurring correspondents, and illustrated artifacts from a shared solarpunk setting.",
-      "The first arc is outlined; the next step is finding a collaborator who likes worldbuilding in public.",
-    ],
+    description:
+      "<p>A low-pressure fiction project built around compact episodes, recurring correspondents, and illustrated artifacts from a shared solarpunk setting.</p><p>The first arc is outlined; the next step is finding a collaborator who likes worldbuilding in public.</p>",
     stage: "IDEA",
     commitmentLevel: "CASUAL",
     collaborationStyle: ["Remote", "Async-friendly"],
@@ -162,10 +158,8 @@ export const PROJECTS: Project[] = [
     title: "Neighborhood tool-share app",
     pitch:
       "A map-based app for borrowing tools from neighbors. Backend is up; we need a designer and a React dev to ship the v1.",
-    description: [
-      "A neighborhood resource map where residents can lend drills, ladders, garden tools, and repair gear without starting from a blank marketplace.",
-      "The core backend and auth flow are working. The remaining push is interaction design, front-end polish, and launch testing with one pilot block.",
-    ],
+    description:
+      "<p>A neighborhood resource map where residents can lend drills, ladders, garden tools, and repair gear without starting from a blank marketplace.</p><p>The core backend and auth flow are working. The remaining push is interaction design, front-end polish, and launch testing with one pilot block.</p>",
     stage: "NEAR_LAUNCH",
     commitmentLevel: "SERIOUS",
     collaborationStyle: ["Remote", "Scheduled calls"],
@@ -211,9 +205,8 @@ export const PROJECTS: Project[] = [
     title: "Chiptune sample pack",
     pitch:
       "A tiny pack of crunchy melodic loops and one-shot UI sounds for cozy game jams.",
-    description: [
-      "A compact chiptune sample pack built from old handheld-inspired synth patches, short melodic loops, and tactile UI sounds.",
-    ],
+    description:
+      "<p>A compact chiptune sample pack built from old handheld-inspired synth patches, short melodic loops, and tactile UI sounds.</p>",
     stage: "IDEA",
     commitmentLevel: "CASUAL",
     collaborationStyle: ["Remote", "Flexible"],
@@ -242,10 +235,8 @@ export const PROJECTS: Project[] = [
     title: "Pixel art zine",
     pitch:
       "A near-finished PDF zine about tiny palettes, tile constraints, and making expressive game props.",
-    description: [
-      "A practical pixel art zine collecting short exercises, annotated sprite sheets, and constraints that make small tiles feel expressive.",
-      "Most pages are laid out; the final pass needs proofreading and a few guest examples.",
-    ],
+    description:
+      "<p>A practical pixel art zine collecting short exercises, annotated sprite sheets, and constraints that make small tiles feel expressive.</p><p>Most pages are laid out; the final pass needs proofreading and a few guest examples.</p>",
     stage: "NEAR_LAUNCH",
     commitmentLevel: "PART_TIME",
     collaborationStyle: ["Remote", "Async-friendly"],
@@ -280,10 +271,8 @@ export const PROJECTS: Project[] = [
     title: "Indie music discovery zine",
     pitch:
       "A monthly digital zine pairing short artist interviews with visual listening notes and small-scene recommendations.",
-    description: [
-      "A design-and-writing project for people who miss hand-curated music blogs but want something lighter than a magazine.",
-      "The first issue theme is local scenes that trade demos in group chats instead of streaming campaigns.",
-    ],
+    description:
+      "<p>A design-and-writing project for people who miss hand-curated music blogs but want something lighter than a magazine.</p><p>The first issue theme is local scenes that trade demos in group chats instead of streaming campaigns.</p>",
     stage: "PROTOTYPE",
     commitmentLevel: "CASUAL",
     collaborationStyle: ["Remote", "Async-friendly"],
@@ -323,10 +312,8 @@ export const PROJECTS: Project[] = [
     title: "Climate data viz dashboard",
     pitch:
       "An approachable dashboard that turns regional climate datasets into clear, annotated visual stories for classrooms.",
-    description: [
-      "A dashboard prototype for exploring climate indicators without requiring users to understand raw tables first.",
-      "The focus is clear comparisons, annotations, and classroom-ready exports.",
-    ],
+    description:
+      "<p>A dashboard prototype for exploring climate indicators without requiring users to understand raw tables first.</p><p>The focus is clear comparisons, annotations, and classroom-ready exports.</p>",
     stage: "PROTOTYPE",
     commitmentLevel: "SERIOUS",
     collaborationStyle: ["Remote", "Scheduled calls"],
@@ -367,9 +354,8 @@ export const PROJECTS: Project[] = [
     title: "Pocket podcast studio",
     pitch:
       "A lightweight workflow kit for recording, editing, and publishing polished mini-interviews from a phone.",
-    description: [
-      "A prototype workflow that combines practical templates, audio cleanup presets, and publishing checklists for short interview shows.",
-    ],
+    description:
+      "<p>A prototype workflow that combines practical templates, audio cleanup presets, and publishing checklists for short interview shows.</p>",
     stage: "IN_PROGRESS",
     commitmentLevel: "PART_TIME",
     collaborationStyle: ["Remote", "Flexible"],
@@ -408,10 +394,8 @@ export const PROJECTS: Project[] = [
     title: "Community fundraising playbook",
     pitch:
       "A practical launch playbook for neighborhood groups raising small pools of money without turning into a full nonprofit.",
-    description: [
-      "A structured guide with outreach scripts, event formats, and transparent budget templates for community-led fundraising.",
-      "The project needs a sharper editorial voice and a few real-world examples before public release.",
-    ],
+    description:
+      "<p>A structured guide with outreach scripts, event formats, and transparent budget templates for community-led fundraising.</p><p>The project needs a sharper editorial voice and a few real-world examples before public release.</p>",
     stage: "IDEA",
     commitmentLevel: "SERIOUS",
     collaborationStyle: ["Remote", "In-person"],

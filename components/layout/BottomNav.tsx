@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
 import type { User } from '@/lib/mock/types';
+import { useUnreadStore } from '@/lib/stores/useUnreadStore';
 import { cn } from '@/lib/utils';
 
 export interface BottomNavProps {
@@ -21,6 +22,7 @@ export interface BottomNavProps {
  */
 export function BottomNav({ currentUser }: BottomNavProps) {
   const pathname = usePathname();
+  const unreadCount = useUnreadStore((s) => s.unreadConversationIds.size);
   const profileHref = `/profile/${currentUser.username}`;
   const isHome = pathname === '/home';
   const isProfile = pathname.startsWith('/profile');
@@ -35,7 +37,7 @@ export function BottomNav({ currentUser }: BottomNavProps) {
       <Tab href="/home" icon={Compass} label="Home" active={isHome} />
       {/* "My Projects" reasonably overlaps the owner's profile this pass (no dedicated screen in scope). */}
       <Tab href={profileHref} icon={Folder} label="My Projects" active={isProfile} />
-      <Tab href="/messages" icon={MessageSquare} label="Messages" active={isMessages} />
+      <Tab href="/messages" icon={MessageSquare} label="Messages" active={isMessages} badge={unreadCount} />
       <Tab href={profileHref} icon={UserIcon} label="Profile" active={isProfile} />
       <Tab href="/projects/new" icon={Plus} label="Post a Project" active={isNew} />
     </nav>
@@ -48,15 +50,26 @@ interface TabProps {
   label: string;
   active?: boolean;
   disabled?: boolean;
+  badge?: number;
 }
 
 const TAB_BASE =
   'flex flex-1 flex-col items-center justify-center gap-1 py-2 text-[10.5px] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-primary';
 
-function Tab({ href, icon: Icon, label, active, disabled }: TabProps) {
+function Tab({ href, icon: Icon, label, active, disabled, badge }: TabProps) {
   const content = (
     <>
-      <Icon className="h-5 w-5" aria-hidden />
+      <span className="relative">
+        <Icon className="h-5 w-5" aria-hidden />
+        {!!badge && badge > 0 && (
+          <span
+            aria-hidden
+            className="absolute -right-1.5 -top-1 flex h-[14px] min-w-[14px] items-center justify-center rounded-pill bg-primary px-[3px] text-[9px] font-bold leading-none text-white"
+          >
+            {badge > 9 ? '9+' : badge}
+          </span>
+        )}
+      </span>
       <span>{label}</span>
     </>
   );

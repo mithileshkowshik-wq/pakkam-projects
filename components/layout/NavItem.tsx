@@ -10,6 +10,9 @@ export interface NavItemProps {
   label: string;
   active?: boolean;
   disabled?: boolean;
+  /** Unread-count style badge, e.g. the Messages nav item. Renders as a small dot pinned to the
+   * icon's corner so it still reads in the icon-only 768–1200px rail, not just the labeled state. */
+  badge?: number;
 }
 
 // <desktop the rail is icon-only: center the icon, drop the label + horizontal padding.
@@ -20,11 +23,22 @@ const ACTIVE =
   'bg-gradient-to-r from-primary-light/[.22] to-primary/[.08] text-white shadow-[inset_0_0_0_1px_rgba(244,134,141,.35)]';
 const INACTIVE = 'text-sidebar-nav hover:text-white';
 
-export function NavItem({ href, icon: Icon, label, active, disabled }: NavItemProps) {
+export function NavItem({ href, icon: Icon, label, active, disabled, badge }: NavItemProps) {
   const content = (
     <>
-      <Icon className="h-[18px] w-[18px] flex-none" aria-hidden />
+      <span className="relative flex-none">
+        <Icon className="h-[18px] w-[18px]" aria-hidden />
+        {!!badge && badge > 0 && (
+          <span
+            aria-hidden
+            className="absolute -right-1.5 -top-1.5 flex h-[15px] min-w-[15px] items-center justify-center rounded-pill bg-primary px-[3px] text-[9.5px] font-bold leading-none text-white"
+          >
+            {badge > 9 ? '9+' : badge}
+          </span>
+        )}
+      </span>
       <span className="hidden desktop:inline">{label}</span>
+      {!!badge && badge > 0 && <span className="sr-only">, {badge} unread</span>}
     </>
   );
 
